@@ -1,0 +1,2251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Stack Mastery — Syllabus & Roadmap</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --surface: #1a1d2e; --surface2: #252840;
+      --text: #e2e8f0; --muted: #718096; --done: #48bb78; --border: #2d3748;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 1.5rem 1rem; }
+    h1 { text-align: center; font-size: 1.8rem; margin-bottom: 0.3rem; background: linear-gradient(135deg, #7c6af7, #56cfb2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .subtitle { text-align: center; color: var(--muted); margin-bottom: 1.2rem; font-size: 0.82rem; }
+
+    /* TABS */
+    .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+    .tab-btn { padding: 0.4rem 1rem; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; }
+    .tab-btn:hover { color: var(--text); border-color: #555; }
+    .tab-btn.active { color: #fff; border-color: transparent; }
+    .tab-btn[data-tech="js"].active      { background:#f7df1e; color:#000; }
+    .tab-btn[data-tech="react"].active   { background:#61dafb; color:#000; }
+    .tab-btn[data-tech="node"].active    { background:#68a063; color:#fff; }
+    .tab-btn[data-tech="mysql"].active   { background:#00758f; color:#fff; }
+    .tab-btn[data-tech="mongo"].active   { background:#13aa52; color:#fff; }
+    .tab-btn[data-tech="aws"].active     { background:#ff9900; color:#000; }
+    .tab-btn[data-tech="dsa"].active     { background:#e64a19; color:#fff; }
+    .tab-btn[data-tech="sysdesign"].active { background:#7c6af7; color:#fff; }
+    .tab-btn[data-tech="interviewq"].active { background:#e91e8c; color:#fff; }
+    .tab-btn[data-tech="roadmap"].active { background:linear-gradient(135deg,#7c6af7,#56cfb2); color:#fff; }
+    .tab-btn[data-tech="typeorm"].active  { background:linear-gradient(135deg,#e96b00,#c0392b); color:#fff; }
+    .tab-btn[data-tech="typescript"].active { background:#3178c6; color:#fff; }
+    .tab-btn[data-tech="behavioral"].active { background:#43a047; color:#fff; }
+    .tab-btn[data-tech="git"].active { background:#f05032; color:#fff; }
+    .tab-btn[data-tech="progress"].active { background:linear-gradient(135deg,#56cfb2,#7c6af7); color:#fff; }
+
+    /* PROGRESS */
+    .global-progress { max-width: 900px; margin: 0 auto 0.8rem; }
+    .progress-bar-wrap { background: var(--surface); border-radius: 999px; height: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 0.3rem; }
+    .progress-bar { height: 100%; border-radius: 999px; transition: width 0.3s ease; width: 0%; }
+    .progress-label { text-align: center; color: var(--muted); font-size: 0.78rem; }
+    .controls { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    button.ctrl { padding: 0.3rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; font-size: 0.78rem; transition: background 0.2s; }
+    button.ctrl:hover { background: #7c6af7; border-color: #7c6af7; }
+
+    /* TECH DESCRIPTION */
+    .tech-desc { max-width: 1300px; margin: 0 auto 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start; }
+    .tech-desc-badge { font-size: 1.8rem; flex-shrink: 0; }
+    .tech-desc-body h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+    .tech-desc-body p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .tech-desc-body .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+    .tech-desc-body .tag { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: var(--surface2); color: var(--muted); }
+
+    /* GRID */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 1rem; max-width: 1300px; margin: 0 auto; }
+    .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; transition: border-color 0.2s; }
+    .level-card:hover { border-color: #7c6af7; }
+    .level-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .level-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .level-badge { font-size: 0.66rem; padding: 0.15rem 0.4rem; border-radius: 999px; background: var(--surface2); color: var(--muted); }
+    .subsection { margin-bottom: 0.65rem; }
+    .subsection-title { font-size: 0.68rem; font-weight: 700; margin-bottom: 0.22rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    ul { list-style: none; }
+    li { display: flex; align-items: flex-start; gap: 0.4rem; padding: 0.17rem 0; font-size: 0.8rem; color: var(--text); cursor: pointer; border-radius: 4px; }
+    li:hover { color: #fff; }
+    li.done { color: var(--muted); text-decoration: line-through; }
+    li input[type="checkbox"] { width: 13px; height: 13px; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+    .card-progress { margin-top: 0.6rem; height: 3px; background: var(--surface2); border-radius: 999px; overflow: hidden; }
+    .card-progress-fill { height: 100%; background: linear-gradient(90deg, #7c6af7, #56cfb2); border-radius: 999px; transition: width 0.3s; }
+
+    /* DIFFICULTY */
+    .diff-easy  { color: #48bb78 !important; }
+    .diff-medium { color: #f6ad55 !important; }
+    .diff-hard  { color: #fc8181 !important; }
+
+    /* ROADMAP */
+    /* PROGRESS DASHBOARD */
+    .progress-wrap { max-width: 1100px; margin: 0 auto; padding: 0.5rem; }
+    .progress-hero { text-align:center; margin-bottom: 1.5rem; }
+    .progress-hero h2 { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .progress-hero p { color: var(--muted); font-size: 0.82rem; }
+    .progress-overall { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; text-align:center; }
+    .progress-overall .big-pct { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg,#56cfb2,#7c6af7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
+    .progress-overall .big-bar-wrap { background: var(--surface2); border-radius: 999px; height: 14px; overflow:hidden; margin: 0.7rem auto; max-width: 500px; border:1px solid var(--border); }
+    .progress-overall .big-bar { height: 100%; background: linear-gradient(90deg,#56cfb2,#7c6af7); border-radius:999px; transition: width 0.6s ease; }
+    .progress-overall .big-label { color: var(--muted); font-size: 0.82rem; }
+    .progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .pcard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+    .pcard:hover { transform: translateY(-2px); }
+    .pcard-top { display:flex; align-items:center; gap: 0.6rem; margin-bottom: 0.7rem; }
+    .pcard-emoji { font-size: 1.4rem; }
+    .pcard-name { font-size: 0.88rem; font-weight: 700; flex:1; }
+    .pcard-pct { font-size: 1rem; font-weight: 800; }
+    .pcard-bar-wrap { background: var(--surface2); border-radius: 999px; height: 7px; overflow:hidden; margin-bottom: 0.4rem; border:1px solid var(--border); }
+    .pcard-bar { height:100%; border-radius:999px; transition: width 0.5s ease; }
+    .pcard-count { font-size: 0.72rem; color: var(--muted); }
+    .progress-streaks { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:0.75rem; }
+    .streak-card { background: var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; text-align:center; }
+    .streak-card .s-num { font-size: 1.8rem; font-weight:800; }
+    .streak-card .s-label { font-size:0.75rem; color:var(--muted); margin-top:0.2rem; }
+    @media(max-width:500px){ .progress-overall .big-pct{font-size:2.2rem} .pcard-pct{font-size:0.88rem} }
+
+    .roadmap-wrap { max-width: 1200px; margin: 0 auto; padding: 0.5rem; }
+    .roadmap-section { margin-bottom: 2rem; }
+    .roadmap-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.7rem; }
+    .roadmap-track { display: flex; flex-wrap: wrap; gap: 0; align-items: stretch; }
+    .roadmap-node { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; min-width: 140px; flex: 1; position: relative; }
+    .roadmap-node h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .roadmap-node ul { list-style: none; }
+    .roadmap-node ul li { font-size: 0.72rem; color: var(--muted); padding: 0.08rem 0; display: block; cursor: default; }
+    .roadmap-node ul li:hover { color: var(--text); }
+    .roadmap-node ul li::before { content: "› "; }
+    .roadmap-arrow { display: flex; align-items: center; padding: 0 0.3rem; color: var(--muted); font-size: 1.2rem; flex-shrink: 0; }
+    .roadmap-node.highlight { border-color: #7c6af7; }
+    .roadmap-node.done-node { border-color: var(--done); }
+    .roadmap-month { font-size: 0.65rem; color: var(--muted); margin-top: 0.35rem; display: block; }
+    .roadmap-parallel { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+    @media(max-width:600px) { .roadmap-parallel { grid-template-columns: 1fr; } .roadmap-track { flex-direction: column; } .roadmap-arrow { transform: rotate(90deg); align-self: center; } }
+    .stage-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 0.12rem 0.4rem; border-radius: 4px; margin-bottom: 0.4rem; color: #fff; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem auto; max-width: 1300px; }
+    .roadmap-legend { display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.72rem; color: var(--muted); margin-bottom: 1rem; justify-content: center; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+<h1>Full Stack Mastery</h1>
+<p class="subtitle">Syllabus · Roadmap · DSA · System Design · Interview Prep &nbsp;|&nbsp; Micro → Macro</p>
+
+<div class="tabs" id="mainTabs">
+  <button class="tab-btn"  data-tech="js"         onclick="switchTab('js')">JavaScript</button>
+  <button class="tab-btn"         data-tech="react"      onclick="switchTab('react')">React</button>
+  <button class="tab-btn"         data-tech="node"       onclick="switchTab('node')">Node.js</button>
+  <button class="tab-btn"         data-tech="mysql"      onclick="switchTab('mysql')">MySQL</button>
+  <button class="tab-btn"         data-tech="mongo"      onclick="switchTab('mongo')">MongoDB</button>
+  <button class="tab-btn"         data-tech="aws"        onclick="switchTab('aws')">AWS</button>
+  <button class="tab-btn"         data-tech="dsa"        onclick="switchTab('dsa')">DSA</button>
+  <button class="tab-btn"         data-tech="sysdesign"  onclick="switchTab('sysdesign')">System Design</button>
+  <button class="tab-btn"         data-tech="interviewq" onclick="switchTab('interviewq')">Interview Q</button>
+  <button class="tab-btn"         data-tech="typescript" onclick="switchTab('typescript')">TypeScript</button>
+  <button class="tab-btn"         data-tech="behavioral" onclick="switchTab('behavioral')">Behavioral / HR</button>
+  <button class="tab-btn"         data-tech="git"        onclick="switchTab('git')">Git</button>
+  <button class="tab-btn"         data-tech="typeorm"    onclick="switchTab('typeorm')">Express+TypeORM</button>
+  <button class="tab-btn active"   data-tech="progress"   onclick="switchTab('progress')">📊 My Progress</button>
+  <button class="tab-btn"         data-tech="roadmap"    onclick="switchTab('roadmap')">Roadmap</button>
+</div>
+
+<div class="global-progress">
+  <div class="progress-bar-wrap"><div class="progress-bar" id="globalBar"></div></div>
+  <div class="progress-label" id="globalLabel">Loading...</div>
+</div>
+
+<div class="controls">
+  <button class="ctrl" onclick="resetCurrent()">Reset Current Tab</button>
+  <button class="ctrl" onclick="resetAll()">Reset ALL Progress</button>
+</div>
+
+<div id="panels"></div>
+
+<script>
+/* ═══════════════════════ DATA ═══════════════════════ */
+const data = {
+
+js: {
+  emoji:"🟨", color:['#f7df1e','#000'],
+  description: "JavaScript is the programming language of the web — runs in browsers and on servers (Node.js). It's prototype-based, event-driven, and single-threaded with a non-blocking async model. Foundation for all modern web development.",
+  tags:["Interpreted","Prototype-based","Event-driven","Single-threaded","ECMAScript standard"],
+  levels:[
+    { level:"L1", tag:"Foundation", sections:[
+      { title:"Basics", items:["var, let, const + hoisting","Data types: string, number, boolean, null, undefined, symbol, bigint","Type coercion + typeof","Operators: arithmetic, comparison, logical, bitwise, ternary, nullish ??","Template literals","Comments"] },
+      { title:"Control Flow", items:["if/else, else if","switch statement","Ternary operator","Short-circuit &&, ||"] },
+      { title:"Loops", items:["for, while, do...while","for...in, for...of","break, continue","Labeled statements"] }
+    ]},
+    { level:"L2", tag:"Core Language", sections:[
+      { title:"Functions", items:["Declaration vs expression","Arrow functions","Default parameters","Rest params ...args","Arguments object","IIFE","Closures","Pure functions","Higher-order functions"] },
+      { title:"Arrays", items:["push, pop, shift, unshift, splice","forEach, map, filter, reduce","find, findIndex, some, every","flat, flatMap, Array.from, Array.of","Spread ..., destructuring","sort, indexOf, includes","fill(value, start, end) — overwrite range","copyWithin(target, start, end)","at(index) — negative index support","entries(), keys(), values() — iterators","Array.isArray()","slice vs splice — mutation difference"] },
+      { title:"Objects", items:["Object literals + shorthand","Computed property names","Destructuring","Spread/rest in objects","Object.keys, .values, .entries, .assign, .freeze, .create","Property descriptors","Getters / setters"] },
+      { title:"Strings & Numbers", items:["slice, substring, split, join, trim, replace","includes, startsWith, endsWith, repeat, padStart, padEnd","NaN, Infinity, parseInt, parseFloat","Math object methods"] }
+    ]},
+    { level:"L3", tag:"Intermediate", sections:[
+      { title:"Scope & Execution", items:["Global, function, block scope","Scope chain + lexical scope","Execution context + call stack","Hoisting (var vs let/const vs function)","Temporal dead zone"] },
+      { title:"this Keyword", items:["this in global, function, method, arrow","call, apply, bind","this in classes + event handlers"] },
+      { title:"Prototypes", items:["Prototype chain","__proto__ vs prototype","Object.getPrototypeOf","Prototype-based inheritance"] },
+      { title:"Classes", items:["class syntax + constructor","Instance & static methods/properties","extends, super","Private fields #","Mixins"] },
+      { title:"Error Handling", items:["try/catch/finally","TypeError, ReferenceError, SyntaxError, RangeError","Custom errors (extend Error)","Error propagation"] }
+    ]},
+    { level:"L4", tag:"Async JS", sections:[
+      { title:"Event Loop", items:["Call stack","Web APIs","Macrotask queue","Microtask queue","Event loop cycle","queueMicrotask"] },
+      { title:"Promises", items:["new Promise, resolve, reject",".then, .catch, .finally","Promise chaining","Promise.all, .allSettled, .any, .race","Promisification"] },
+      { title:"Async/Await", items:["async function","await expression","try/catch with async","Parallel vs sequential","Top-level await"] },
+      { title:"Timers", items:["setTimeout, setInterval, clearTimeout, clearInterval","requestAnimationFrame"] }
+    ]},
+    { level:"L5", tag:"Advanced Core", sections:[
+      { title:"Iterators & Generators", items:["Iterator protocol (Symbol.iterator)","Custom iterables","Generator functions function*","yield, yield*","Async generators"] },
+      { title:"Proxy & Reflect", items:["new Proxy(target, handler)","Traps: get, set, has, deleteProperty, apply","Reflect API","Use cases: validation, logging, reactive"] },
+      { title:"Map, Set, Weak*", items:["Map vs plain object","Set for unique values","WeakMap, WeakSet, WeakRef","Memory management use cases"] },
+      { title:"RegExp", items:["Syntax, flags","test, exec, match, matchAll, replace, split","Groups, lookahead, lookbehind","Named groups"] }
+    ]},
+    { level:"L6", tag:"Browser / DOM", sections:[
+      { title:"DOM", items:["querySelector, getElementById, querySelectorAll","Traversal: parentNode, children, nextSibling","createElement, appendChild, removeChild","innerHTML, textContent, dataset, classList"] },
+      { title:"Events", items:["addEventListener, removeEventListener","Event object","Bubbling, capturing","stopPropagation, preventDefault","Event delegation","Custom events"] },
+      { title:"Storage & Fetch", items:["localStorage, sessionStorage, IndexedDB, Cookies","fetch: Request, Response, Headers","GET, POST, PUT, DELETE","AbortController","ReadableStream"] },
+      { title:"Web APIs", items:["History API","URL, URLSearchParams","Intersection Observer","Mutation Observer","Web Workers","Service Workers intro","WebSockets","Canvas 2D","Notifications API"] }
+    ]},
+    { level:"L7", tag:"Modules & Tooling", sections:[
+      { title:"Modules", items:["import / export (ESM)","Default vs named exports","Dynamic import()","CommonJS require/module.exports","CommonJS vs ESM differences"] },
+      { title:"Tooling", items:["npm, yarn, pnpm","package.json + semver","Vite, Webpack concepts","Babel transpilation","ESLint, Prettier","Tree shaking, code splitting"] }
+    ]},
+    { level:"L8", tag:"Patterns", sections:[
+      { title:"Functional", items:["Immutability","Pure functions","Function composition","Currying, partial application"] },
+      { title:"Creational Patterns", items:["Singleton — one instance only (e.g. DB connection, config)","Factory Function — create objects without new keyword","Abstract Factory — factory that creates factories (family of objects)","Builder Pattern — step-by-step object construction (e.g. query builder)","Prototype Pattern (GoF) — clone existing object as base","Constructor Pattern — using new keyword + class/function","Object Pool — reuse expensive objects (connections, workers)"] },
+      { title:"Structural Patterns", items:["Module pattern — encapsulate private state with IIFE/closure","Decorator — wrap object to add behavior (e.g. logging, auth middleware)","Facade — simple interface over complex subsystem","Adapter — convert interface to what client expects","Proxy — intercept access (e.g. ES6 Proxy, Nginx)","Composite — treat single object and group uniformly (e.g. DOM tree)","Mixin — copy methods from multiple sources onto prototype"] },
+      { title:"Behavioral Patterns", items:["Observer / Pub-Sub — subscribe to events (EventEmitter, DOM events)","Strategy — swap algorithms at runtime (sorting, auth strategies)","Command — encapsulate action as object (undo/redo, queue jobs)","Chain of Responsibility — pass request down handler chain (Express middleware)","Iterator — traverse collection without exposing internals (for...of)","Mediator — central hub coordinates components (EventBus)","State — object changes behavior when internal state changes"] },
+      { title:"Architecture Patterns", items:["MVC — Model View Controller (Express + template engines)","MVP — Model View Presenter (testable UI logic)","MVVM — Model View ViewModel (React/Vue data binding)","MVC / MVP / MVVM","Flux — unidirectional data flow (Redux)","Layered / N-tier — presentation, business, data layers"] },
+      { title:"OOP & Principles", items:["SOLID principles","S — Single Responsibility","O — Open/Closed","L — Liskov Substitution","I — Interface Segregation","D — Dependency Inversion","DRY, KISS, YAGNI","Encapsulation, Inheritance, Polymorphism, Abstraction"] },
+      { title:"OOP", items:["SOLID principles","Encapsulation, Inheritance, Polymorphism, Abstraction"] }
+    ]},
+    { level:"L9", tag:"Performance & Testing", sections:[
+      { title:"Performance", items:["Debounce, throttle","Lazy loading","requestAnimationFrame","requestIdleCallback","Web Workers off-thread","Garbage collection + memory leaks","V8 JIT, hidden classes"] },
+      { title:"Testing", items:["Jest: describe, it, expect","Mocking, spying","Vitest","TDD approach","Code coverage"] },
+      { title:"Security", items:["XSS, CSRF prevention","Content Security Policy","eval danger","Prototype pollution","Input sanitization","CORS"] }
+    ]},
+    { level:"L10", tag:"Extra Large", sections:[
+      { title:"TypeScript", items:["Types, interfaces, generics","Enums, utility types","Type narrowing","Decorators"] },
+      { title:"Advanced Async", items:["Cancellable operations","Async iterators","Async generators + for await...of","Concurrency patterns"] },
+      { title:"Runtimes", items:["Deno, Bun differences","Cloudflare Workers","Vercel Edge","WebAssembly basics"] }
+    ]}
+  ]
+},
+
+react: {
+  emoji:"⚛️", color:['#61dafb','#000'],
+  description: "React is a declarative UI library by Meta for building component-based interfaces. Uses a Virtual DOM for efficient updates, unidirectional data flow, and a hooks API for state/side-effects. The most widely used frontend library.",
+  tags:["UI Library","Component-based","Virtual DOM","Unidirectional flow","Meta / Facebook","Hooks API"],
+  levels:[
+    { level:"L1", tag:"JSX & Basics", sections:[
+      { title:"JSX", items:["JSX syntax + expressions","JSX vs HTML differences","Fragments <>","Conditional rendering: &&, ternary","Rendering lists + keys","className, style"] },
+      { title:"Components", items:["Function components","Props + prop types","children prop","Default props","Component composition","Export / import components"] }
+    ]},
+    { level:"L2", tag:"Core Hooks", sections:[
+      { title:"useState", items:["useState basics","Functional updates","Object/array state","Lazy initializer","State batching (React 18)"] },
+      { title:"useEffect", items:["Side effects","Dependency array","Cleanup function","Run once (empty deps)","Fetch in useEffect","Effect timing vs layout"] },
+      { title:"useRef", items:["DOM refs","Persist mutable values across renders","forwardRef","useImperativeHandle"] },
+      { title:"More Hooks", items:["useMemo — memoize values","useCallback — memoize functions","useContext","useReducer","useId, useTransition, useDeferredValue"] }
+    ]},
+    { level:"L3", tag:"Component Patterns", sections:[
+      { title:"Patterns", items:["Controlled vs uncontrolled components","Lifting state up","Composition over inheritance","Render props","Higher-order components (HOC)","Compound components"] },
+      { title:"Forms", items:["Controlled inputs","textarea, select, checkbox, radio","Form submission","React Hook Form","Formik basics","Zod / Yup validation"] }
+    ]},
+    { level:"L4", tag:"State Management", sections:[
+      { title:"Context API", items:["createContext, Provider, useContext","Context + useReducer pattern","Context performance pitfalls","Multiple contexts"] },
+      { title:"Redux Toolkit", items:["Store, slices, reducers","createSlice, createAction","useSelector, useDispatch","Async thunks (createAsyncThunk)","RTK Query basics","Redux DevTools"] },
+      { title:"Alternatives", items:["Zustand basics","Jotai atoms","Recoil concept","When to use global state vs local"] }
+    ]},
+    { level:"L5", tag:"Routing", sections:[
+      { title:"React Router v6", items:["BrowserRouter, Routes, Route","Link, NavLink","useNavigate, useParams, useLocation","Nested routes + Outlet","Protected/private routes","Lazy routes with Suspense","Search params"] }
+    ]},
+    { level:"L6", tag:"Performance", sections:[
+      { title:"Optimization", items:["React.memo","useMemo + useCallback when to use","Code splitting: React.lazy + Suspense","Dynamic imports","Virtualization: react-window, react-virtual","Avoid re-renders: reference stability","React Profiler API"] },
+      { title:"StrictMode", items:["<React.StrictMode> wrapper — dev-only checks","Double-invokes: render, constructor, useState updater fn","Double-invokes effects (mount → unmount → remount)","Detects legacy lifecycle methods","Detects deprecated findDOMNode","Detects unexpected side effects","Does NOT affect production build","Wraps entire app in main.tsx or per subtree","Why double invoke: expose impure effects early","Common confusion: useEffect fires twice in dev — expected"] }
+    ]},
+    { level:"L7", tag:"Data Fetching", sections:[
+      { title:"Patterns", items:["fetch in useEffect pattern","Custom fetch hook","TanStack Query (React Query)","SWR basics","Loading/error/success states","Optimistic updates","Infinite scroll / pagination","Prefetching + cache invalidation"] }
+    ]},
+    { level:"L8", tag:"Advanced React", sections:[
+      { title:"Advanced", items:["Error Boundaries","Portals","Concurrent mode + transitions","Suspense for data","Server Components (RSC) concept","useOptimistic","Server Actions (Next.js)"] },
+      { title:"Styling", items:["CSS Modules","Tailwind CSS integration","Styled-components / Emotion","CSS-in-JS tradeoffs","shadcn/ui, Radix UI"] },
+      { title:"More Patterns", items:["Container/presenter split","Custom hooks for logic reuse","Slots pattern","State machines (XState intro)"] }
+    ]},
+    { level:"L9", tag:"Testing", sections:[
+      { title:"React Testing", items:["React Testing Library (RTL)","render, screen, userEvent","Queries: getBy, findBy, queryBy","Testing user interactions","Mocking modules + API calls","Testing hooks","Snapshot testing","Vitest + RTL setup"] }
+    ]},
+    { level:"L10", tag:"Ecosystem & Extra", sections:[
+      { title:"Next.js", items:["App Router vs Pages Router","File-based routing","Server vs Client components","getServerSideProps, getStaticProps","API routes","Middleware","Image, Font, Link optimizations","Vercel deployment"] },
+      { title:"TypeScript + React", items:["Typing props, state, events","Generic components","Utility types for React","useRef typing"] },
+      { title:"Extra Large", items:["Micro-frontends concept","Module Federation","React Native intro","Storybook component docs","Accessibility (a11y)","Internationalization (i18n)"] }
+    ]}
+  ]
+},
+
+node: {
+  emoji:"🟢", color:['#68a063','#fff'],
+  description: "Node.js is a JavaScript runtime built on Chrome's V8 engine. Uses non-blocking I/O and an event-driven architecture to handle thousands of concurrent connections efficiently. The standard for building scalable backend APIs.",
+  tags:["JavaScript runtime","V8 engine","Event-driven","Non-blocking I/O","npm ecosystem","Cross-platform"],
+  levels:[
+    { level:"L1", tag:"Node Basics", sections:[
+      { title:"Core Concepts", items:["Node.js + V8 + libuv architecture","Event-driven, non-blocking I/O model","process: env, argv, exit, cwd","__dirname, __filename","Global objects","REPL"] },
+      { title:"Module System", items:["CommonJS: require, module.exports","ESM: import/export in Node","Module caching","Built-in vs third-party vs local","package.json basics"] }
+    ]},
+    { level:"L2", tag:"Built-in Modules", sections:[
+      { title:"File System", items:["fs.readFile, writeFile (async)","fs.readFileSync, writeFileSync (sync)","fs.promises API","fs.watch, fs.stat","Directory: mkdir, readdir, rmdir","Streams: createReadStream, createWriteStream"] },
+      { title:"Other Core", items:["path: join, resolve, basename, dirname, extname","os: platform, cpus, freemem, homedir","crypto: hash, hmac, randomBytes, cipher","buffer: Buffer.from, alloc, toString","child_process: exec, spawn, fork","events: EventEmitter, on, emit, once"] }
+    ]},
+    { level:"L3", tag:"Streams", sections:[
+      { title:"Streams", items:["Readable streams","Writable streams","Duplex + Transform streams","pipe()","Stream events: data, end, error, finish","Backpressure concept","stream.pipeline (error-safe)","Async iteration over streams"] }
+    ]},
+    { level:"L4", tag:"HTTP & Express", sections:[
+      { title:"Raw HTTP", items:["http.createServer","req: method, url, headers, body","res: writeHead, write, end","Parsing body manually","HTTP vs HTTPS"] },
+      { title:"Express.js", items:["express() setup","app.get/post/put/delete/patch","Route params :id, query strings","req.body, req.params, req.query, req.headers","res.json, res.send, res.status, res.redirect","express.Router","Static files: express.static","Error handler (4-arg middleware)"] },
+      { title:"Middleware", items:["Middleware concept + next()","app.use() order matters","morgan, helmet, cors, compression","express.json, express.urlencoded","Custom middleware pattern","multer for file uploads"] }
+    ]},
+    { level:"L5", tag:"Auth & Security", sections:[
+      { title:"Authentication", items:["JWT: sign, verify, decode","jsonwebtoken package","Refresh tokens pattern","Session-based auth (express-session)","Cookies: httpOnly, secure, sameSite","Passport.js strategies","OAuth2 / Google / GitHub login"] },
+      { title:"Security", items:["helmet (security headers)","Rate limiting (express-rate-limit)","CORS configuration","Input validation: joi, zod, express-validator","bcrypt password hashing","SQL/NoSQL injection prevention","Environment variables (dotenv)"] }
+    ]},
+    { level:"L6", tag:"Database Integration", sections:[
+      { title:"SQL", items:["mysql2 driver","Connection pools","Parameterized queries","Transactions","Sequelize ORM basics","Migrations"] },
+      { title:"MongoDB", items:["mongodb native driver","mongoose ODM","Schemas + models","CRUD with mongoose","Mongoose hooks (pre/post)","Population"] },
+      { title:"Redis", items:["ioredis basics","Caching strategy","Session storage","Pub/Sub"] }
+    ]},
+    { level:"L7", tag:"REST API Design", sections:[
+      { title:"API Design", items:["RESTful conventions + resource naming","HTTP methods semantics","Status codes: 200 201 400 401 403 404 409 422 500","Pagination: offset vs cursor","Filtering, sorting, search params","API versioning","Error response format","OpenAPI / Swagger docs"] }
+    ]},
+    { level:"L8", tag:"Real-time & Queues", sections:[
+      { title:"WebSockets", items:["ws package basics","socket.io: rooms, namespaces, events","Broadcast vs emit to room","Auth with socket.io","Reconnection handling"] },
+      { title:"Job Queues", items:["Bull / BullMQ queues","Redis Pub/Sub","RabbitMQ basics (AMQP)","Background workers","Cron jobs (node-cron)"] }
+    ]},
+    { level:"L9", tag:"Testing", sections:[
+      { title:"Node Testing", items:["Jest / Vitest for Node","Supertest for HTTP","Unit test business logic","Integration tests with real DB","Test doubles: mocks, stubs, spies","Testing async code","Setup + teardown"] }
+    ]},
+    { level:"L10", tag:"Performance & Deploy", sections:[
+      { title:"Performance", items:["Clustering: cluster module","Worker threads","PM2 process manager","Profiling with --inspect + DevTools","Memory leak detection","Response caching","Compression middleware"] },
+      { title:"PM2", items:["pm2 start app.js --name myapp","pm2 list — view all processes","pm2 logs / pm2 logs myapp","pm2 restart / pm2 reload (zero-downtime)","pm2 stop / pm2 delete","pm2 startup — auto-start on system boot","pm2 save — persist process list","ecosystem.config.js — config file for multiple apps","Cluster mode: pm2 start app.js -i max","pm2 monit — real-time CPU/memory dashboard","pm2 env variables in ecosystem config","pm2 watch + ignore_watch"] },
+      { title:"Nginx", items:["What is Nginx: web server + reverse proxy + load balancer","Install: apt/yum/brew install nginx","nginx.conf structure: events, http, server, location blocks","server_name + listen port","reverse proxy: proxy_pass http://localhost:3000","proxy_set_header Host, X-Real-IP, X-Forwarded-For","Multiple Node apps on same server (different ports)","Static file serving: root + try_files","SSL/TLS: listen 443 ssl, ssl_certificate, ssl_certificate_key","Let's Encrypt + Certbot auto-renewal","gzip compression: gzip on, gzip_types","Rate limiting: limit_req_zone + limit_req","upstream block for load balancing","nginx -t — test config syntax","systemctl reload nginx — apply changes without downtime"] },
+      { title:"Deployment", items:["Dockerfile for Node.js","docker-compose","Nginx reverse proxy","CI/CD basics","Deploy to EC2 / Railway / Render","Health check endpoints","Graceful shutdown"] }
+    ]},
+    { level:"L11", tag:"Advanced", sections:[
+      { title:"Microservices", items:["Monolith vs microservices","REST vs gRPC communication","API Gateway pattern","Service discovery","Circuit breaker"] },
+      { title:"GraphQL", items:["GraphQL vs REST","Schema, types, resolvers","apollo-server / graphql-yoga","Queries, mutations, subscriptions","DataLoader (N+1 problem)"] }
+    ]}
+  ]
+},
+
+mysql: {
+  emoji:"🐬", color:['#00758f','#fff'],
+  description: "MySQL is the world's most popular open-source relational database. Stores data in structured tables with rows and columns, enforces ACID transactions, and uses SQL for powerful querying. Used by Facebook, Twitter, YouTube at massive scale.",
+  tags:["Relational DB","SQL","ACID transactions","InnoDB engine","Open-source","Oracle-owned"],
+  levels:[
+    { level:"L1", tag:"Basics", sections:[
+      { title:"Concepts", items:["RDBMS concepts: tables, rows, columns","Primary key, foreign key","Schemas + databases","MySQL vs PostgreSQL vs SQLite","MySQL Workbench / CLI basics"] },
+      { title:"Data Types", items:["INT, BIGINT, TINYINT, DECIMAL, FLOAT","VARCHAR, CHAR, TEXT, BLOB","DATE, DATETIME, TIMESTAMP, TIME, YEAR","BOOLEAN / TINYINT(1)","ENUM, SET","JSON type"] }
+    ]},
+    { level:"L2", tag:"DDL", sections:[
+      { title:"Schema", items:["CREATE DATABASE, DROP DATABASE","CREATE TABLE","NOT NULL, DEFAULT, UNIQUE constraints","AUTO_INCREMENT","PRIMARY KEY (single + composite)","FOREIGN KEY + ON DELETE/UPDATE actions","ALTER TABLE: ADD, DROP, MODIFY, RENAME","DROP TABLE, TRUNCATE TABLE","CREATE INDEX, DROP INDEX"] }
+    ]},
+    { level:"L3", tag:"DML & DQL", sections:[
+      { title:"CRUD", items:["INSERT INTO ... VALUES","INSERT INTO ... SELECT","UPDATE ... SET ... WHERE","DELETE FROM ... WHERE","TRUNCATE vs DELETE","SELECT basics + DISTINCT","WHERE with comparison + logical operators","BETWEEN, IN, LIKE, IS NULL"] },
+      { title:"Sorting & Limiting", items:["ORDER BY ASC / DESC","LIMIT, OFFSET","LIMIT with ORDER BY for pagination"] }
+    ]},
+    { level:"L4", tag:"Joins", sections:[
+      { title:"Joins", items:["INNER JOIN — matching rows both sides","LEFT JOIN — all left + matched right","RIGHT JOIN — all right + matched left","FULL OUTER JOIN (UNION workaround)","SELF JOIN","CROSS JOIN","Multiple joins in one query","JOIN with aliases","JOIN on multiple conditions"] }
+    ]},
+    { level:"L5", tag:"Aggregation", sections:[
+      { title:"Aggregate", items:["COUNT(*), COUNT(col)","SUM, AVG, MIN, MAX","GROUP BY","HAVING (filter after GROUP BY)","GROUP BY ROLLUP","WHERE + GROUP BY + HAVING together","COALESCE, IFNULL, NULLIF","IF, CASE WHEN"] }
+    ]},
+    { level:"L6", tag:"Subqueries & CTEs", sections:[
+      { title:"Subqueries", items:["Subquery in WHERE","Subquery in FROM (derived table)","Correlated subquery","EXISTS / NOT EXISTS","IN / NOT IN with subquery","Scalar subquery"] },
+      { title:"CTEs", items:["WITH cte AS (...)","Multiple CTEs","Recursive CTEs","CTE vs subquery vs temp table"] }
+    ]},
+    { level:"L7", tag:"Window Functions", sections:[
+      { title:"Windows", items:["OVER() clause","PARTITION BY","ORDER BY inside OVER","ROW_NUMBER()","RANK(), DENSE_RANK()","NTILE(n)","LAG(), LEAD()","FIRST_VALUE(), LAST_VALUE()","SUM/AVG/COUNT as window function","ROWS BETWEEN frames"] }
+    ]},
+    { level:"L8", tag:"Indexes & Performance", sections:[
+      { title:"Indexes", items:["How indexes work (B-tree)","CREATE INDEX, DROP INDEX","Composite indexes + column order","Covering index","Full-text index + MATCH...AGAINST","When NOT to index","EXPLAIN / EXPLAIN ANALYZE"] },
+      { title:"Optimization", items:["Reading EXPLAIN: key, rows, type columns","Index range scans vs full table scan","Avoid SELECT *","slow_query_log","ANALYZE TABLE, OPTIMIZE TABLE"] }
+    ]},
+    { level:"L9", tag:"Transactions", sections:[
+      { title:"Transactions", items:["ACID: Atomicity, Consistency, Isolation, Durability","START TRANSACTION, COMMIT, ROLLBACK","Autocommit mode","SAVEPOINT, ROLLBACK TO SAVEPOINT","Isolation levels: READ UNCOMMITTED → SERIALIZABLE","Dirty reads, phantom reads, non-repeatable reads","Deadlocks + detection + prevention"] }
+    ]},
+    { level:"L10", tag:"Stored Routines", sections:[
+      { title:"Procedures", items:["CREATE PROCEDURE","IN, OUT, INOUT parameters","CALL statement","DECLARE, SET variables","IF, CASE, LOOP, WHILE, REPEAT","DROP PROCEDURE"] },
+      { title:"Functions & Triggers", items:["CREATE FUNCTION (returns value)","Deterministic vs non-deterministic","CREATE TRIGGER: BEFORE/AFTER INSERT/UPDATE/DELETE","OLD and NEW row references","CREATE VIEW + updatable views","CREATE EVENT (scheduled tasks)"] }
+    ]},
+    { level:"L11", tag:"Normalization", sections:[
+      { title:"Normal Forms", items:["Anomalies: insert, update, delete","1NF — atomic values, no repeating groups","2NF — no partial dependency","3NF — no transitive dependency","BCNF","4NF — no multi-valued dependency","Denormalization tradeoffs"] }
+    ]},
+    { level:"L12", tag:"Admin & Advanced", sections:[
+      { title:"Users & Backup", items:["CREATE USER, DROP USER","GRANT, REVOKE privileges","SHOW GRANTS","mysqldump / mysqlpump","Binary log + point-in-time recovery","Master-slave replication basics","Read replicas"] },
+      { title:"Advanced", items:["Partitioning: RANGE, LIST, HASH, KEY","Generated (virtual) columns","JSON functions: JSON_EXTRACT, JSON_ARRAYAGG","Lateral joins (MySQL 8)","Invisible indexes","Window functions (MySQL 8)"] }
+    ]}
+  ]
+},
+
+mongo: {
+  emoji:"🍃", color:['#13aa52','#fff'],
+  description: "MongoDB is a document-oriented NoSQL database. Stores data as flexible BSON documents in collections — no fixed schema. Scales horizontally via sharding, supports rich aggregation pipelines, and is ideal for hierarchical or evolving data models.",
+  tags:["Document DB","BSON documents","Schema-flexible","Horizontal scaling","Atlas cloud","Aggregation pipeline"],
+  levels:[
+    { level:"L1", tag:"Basics", sections:[
+      { title:"Concepts", items:["Document DB vs relational","Documents (BSON) + Collections + Databases","_id field + ObjectId","Schema-less / flexible schema","MongoDB Atlas vs self-hosted","mongosh CLI + Compass GUI"] },
+      { title:"Data Types", items:["String, Number, Boolean","Date, ObjectId","Array, Embedded document","Null, Binary, Decimal128, Long","Regular expression type"] }
+    ]},
+    { level:"L2", tag:"CRUD", sections:[
+      { title:"Insert", items:["insertOne()","insertMany()","Ordered vs unordered inserts","insertedId return value"] },
+      { title:"Find", items:["find() + findOne()","Projection: include/exclude fields","limit, skip, sort","Cursor methods","countDocuments(), estimatedDocumentCount()"] },
+      { title:"Update", items:["updateOne(), updateMany()","replaceOne()","findOneAndUpdate()","upsert option","$set, $unset, $inc, $push, $pull, $addToSet, $pop, $rename","arrayFilters for nested arrays"] },
+      { title:"Delete", items:["deleteOne(), deleteMany()","findOneAndDelete()","drop() — whole collection","Soft delete pattern"] }
+    ]},
+    { level:"L3", tag:"Query Operators", sections:[
+      { title:"Comparison", items:["$eq, $ne, $gt, $gte, $lt, $lte","$in, $nin","$exists","$type"] },
+      { title:"Logical & Array", items:["$and, $or, $not, $nor","$all — array contains all values","$elemMatch — element matches conditions","$size — array length","$regex — pattern match","$expr — compare two fields"] }
+    ]},
+    { level:"L4", tag:"Aggregation", sections:[
+      { title:"Pipeline Stages", items:["$match — filter","$project — reshape documents","$group — aggregate values","$sort, $limit, $skip","$lookup — join collections","$unwind — flatten arrays","$addFields, $set, $unset","$replaceRoot","$count, $facet","$bucket, $bucketAuto","$out, $merge — write results"] },
+      { title:"Expressions", items:["$sum, $avg, $min, $max","$first, $last, $push, $addToSet","$concat, $substr, $toLower, $toUpper","$dateToString, $year, $month, $dayOfMonth","$cond, $ifNull, $switch","$map, $filter, $reduce on arrays","$size, $slice, $indexOfArray"] }
+    ]},
+    { level:"L5", tag:"Indexes", sections:[
+      { title:"Indexes", items:["createIndex()","Single field index","Compound index (order matters)","Multikey index (array fields)","Text index + $text search","2dsphere index + $near, $geoWithin","Unique index","Partial index","TTL index (auto-expire)","explain('executionStats')","Covered queries","Index intersection"] }
+    ]},
+    { level:"L6", tag:"Schema Design", sections:[
+      { title:"Modeling Patterns", items:["Embedding vs referencing","One-to-one, one-to-many, many-to-many","Bucket pattern","Computed pattern","Subset pattern","Outlier pattern","Schema versioning pattern","Extended reference pattern","Anti-patterns to avoid"] }
+    ]},
+    { level:"L7", tag:"Transactions", sections:[
+      { title:"Transactions", items:["Multi-document ACID transactions","Session + startTransaction","commitTransaction, abortTransaction","Retry logic for transient errors","Performance considerations","Requires replica set"] }
+    ]},
+    { level:"L8", tag:"Mongoose ODM", sections:[
+      { title:"Mongoose", items:["connect() + connection events","Schema definition + types","Model creation","CRUD with Model","Schema methods + statics","Virtual fields","Pre/post middleware (hooks)","populate() — reference docs","lean() queries","Validators: required, min, max, enum, custom","Mongoose pagination"] }
+    ]},
+    { level:"L9", tag:"Advanced", sections:[
+      { title:"Change Streams", items:["watch() on collection/db","Events: insert, update, delete","Resume tokens","Use cases: real-time sync, cache invalidation"] },
+      { title:"Atlas", items:["Atlas Search (Lucene-based)","Atlas Vector Search","Atlas Triggers","Atlas Device Sync","Atlas Data Federation"] },
+      { title:"Replication & Sharding", items:["Replica set: primary, secondary, arbiter","Election process","Read preferences","Sharding concept","Shard key selection","Hashed vs ranged sharding","mongos router"] }
+    ]},
+    { level:"L10", tag:"Security & Ops", sections:[
+      { title:"Security", items:["SCRAM + x.509 authentication","RBAC: built-in roles","Custom roles","TLS/SSL connections","Field-level encryption (CSFLE)","IP whitelisting, VPC peering"] },
+      { title:"Operations", items:["mongodump / mongorestore","mongoexport / mongoimport","Atlas backup strategies","mongostat, mongotop monitoring","Connection pooling","db.currentOp(), db.killOp()"] }
+    ]}
+  ]
+},
+
+aws: {
+  emoji:"☁️", color:['#ff9900','#000'],
+  description: "Amazon Web Services is the world's leading cloud platform. Offers 200+ services including compute (EC2, Lambda), storage (S3), databases (RDS, DynamoDB), networking, security, and AI/ML. Pay-as-you-go model eliminates upfront infrastructure costs.",
+  tags:["IaaS/PaaS/SaaS","200+ services","Pay-as-you-go","Global infrastructure","SOC2/ISO certified","Market leader"],
+  levels:[
+    { level:"L1", tag:"Core Concepts", sections:[
+      { title:"Foundations", items:["Regions + Availability Zones + Edge Locations","Global vs Regional services","Shared Responsibility Model","Free Tier awareness","AWS Console, CLI, SDKs","Well-Architected Framework: 6 pillars"] },
+      { title:"IAM", items:["Users, Groups, Roles","Policies: managed vs inline","Policy JSON: Effect, Action, Resource","Least privilege principle","MFA","Service roles + instance profiles","STS: AssumeRole","Identity federation + SSO","SCPs (Service Control Policies)"] }
+    ]},
+    { level:"L2", tag:"Compute", sections:[
+      { title:"EC2", items:["Instance types: t3, m5, c5, r5","AMI + Key pairs + SSH","Security groups (stateful firewall)","Elastic IP","User data scripts","Lifecycle: start, stop, terminate","EBS volumes","Auto Scaling Groups","Launch templates","Spot, On-Demand, Reserved, Savings Plans"] },
+      { title:"Lambda", items:["Function handlers + runtimes","Memory + timeout settings","Environment variables + Layers","Event sources: API GW, S3, SQS, SNS, DynamoDB Streams","Concurrency: reserved + provisioned","Cold starts","Lambda@Edge","Container images in Lambda","Pricing model"] },
+      { title:"Containers", items:["ECS: task definitions, services, clusters","Fargate vs EC2 launch type","ECR: push/pull images","EKS: managed Kubernetes","App Runner","Task roles vs execution roles"] }
+    ]},
+    { level:"L3", tag:"Storage", sections:[
+      { title:"S3", items:["Buckets + objects + keys","Storage classes: Standard, IA, Glacier, Intelligent-Tiering","Lifecycle rules","Versioning","CRR + SRR replication","Bucket policies + ACLs","Pre-signed URLs","Static website hosting","S3 events","Multipart upload","S3 Object Lock","Transfer Acceleration"] },
+      { title:"Other Storage", items:["EBS: gp3, io2, st1, sc1","EBS snapshots","EFS: shared NFS","FSx for Windows + Lustre","Storage Gateway","AWS Backup"] }
+    ]},
+    { level:"L4", tag:"Databases", sections:[
+      { title:"RDS", items:["Engines: MySQL, Postgres, MariaDB, Oracle, SQL Server","Multi-AZ deployment","Read replicas","Automated backups + snapshots","RDS Proxy","Aurora vs standard RDS","Aurora Serverless","DMS for migration"] },
+      { title:"DynamoDB", items:["Tables, items, attributes","Partition key + sort key","Provisioned vs on-demand (RCU/WCU)","GSI + LSI","DynamoDB Streams","TTL","Conditional writes","Transactions","DAX in-memory cache","Single-table design","PartiQL"] },
+      { title:"Other DB", items:["ElastiCache: Redis vs Memcached","Redshift (data warehouse)","Neptune (graph)","DocumentDB (MongoDB-compat)","MemoryDB for Redis"] }
+    ]},
+    { level:"L5", tag:"Networking", sections:[
+      { title:"VPC Core", items:["VPC + CIDR blocks","Public vs private subnets","Internet Gateway (IGW)","NAT Gateway / NAT Instance","Route tables","NACLs (stateless) vs Security Groups (stateful)","VPC Flow Logs"] },
+      { title:"Advanced Networking", items:["VPC Peering","Transit Gateway","PrivateLink / VPC Endpoints","Site-to-Site VPN + Client VPN","Direct Connect","ALB: host/path routing, listener rules, target groups","NLB: TCP/UDP, static IP","WAF integration","Global Accelerator"] }
+    ]},
+    { level:"L6", tag:"DNS & CDN", sections:[
+      { title:"Route 53 + CloudFront", items:["Hosted zones: public + private","Record types: A, AAAA, CNAME, MX, TXT, Alias","Routing: Simple, Weighted, Latency, Failover, Geolocation","Health checks","CloudFront distributions + origins","Cache behaviors + TTL","Geo-restriction","Signed URLs + Signed Cookies","CloudFront Functions vs Lambda@Edge","S3 OAC"] }
+    ]},
+    { level:"L7", tag:"Messaging & Events", sections:[
+      { title:"Queues & Topics", items:["SQS Standard vs FIFO","Visibility timeout + DLQ","Long polling","SQS + Lambda trigger","SNS topics + fanout pattern","SNS + SQS","Message filtering","EventBridge: event buses, rules, targets","EventBridge Pipes","Kinesis Data Streams","Kinesis Firehose"] }
+    ]},
+    { level:"L8", tag:"Security Services", sections:[
+      { title:"Security", items:["KMS: CMK, data keys, envelope encryption","Secrets Manager vs SSM Parameter Store","ACM: TLS certificates","Shield Standard vs Advanced (DDoS)","WAF: web ACLs, rules","GuardDuty: threat detection","Inspector: vulnerability scanning","Macie: S3 data classification","Security Hub","CloudTrail: API audit logs","AWS Config"] }
+    ]},
+    { level:"L9", tag:"Monitoring", sections:[
+      { title:"Observability", items:["CloudWatch Metrics + namespaces","Custom metrics","Alarms: threshold, composite","Dashboards","CloudWatch Logs: log groups, streams","Log Insights queries","Metric filters + Anomaly detection","CloudWatch Agent","X-Ray: traces, segments, service map","X-Ray sampling rules","Systems Manager: Session Manager, Run Command, Patch Manager"] }
+    ]},
+    { level:"L10", tag:"DevOps & IaC", sections:[
+      { title:"CI/CD", items:["CodeBuild: buildspec.yml","CodeDeploy: appspec.yml, in-place, blue/green, canary","CodePipeline: stages + actions","CodeArtifact","ECR in pipelines"] },
+      { title:"Infrastructure as Code", items:["CloudFormation: templates, stacks, change sets","Intrinsic functions: Ref, Fn::Sub, Fn::GetAtt","Nested stacks + StackSets","CDK: constructs L1/L2/L3, stacks, apps","SAM: serverless app model","sam build, sam deploy, sam local invoke"] }
+    ]},
+    { level:"L11", tag:"Serverless", sections:[
+      { title:"API Gateway + Cognito", items:["API Gateway: REST vs HTTP API","Lambda proxy integration","Authorizers: Lambda + Cognito","Usage plans + API keys","WebSocket API","AppSync GraphQL service","Cognito User Pools: sign-up/sign-in","Identity Pools (Federated)","JWT tokens: id/access/refresh","Lambda triggers in Cognito","Amplify full-stack"] }
+    ]},
+    { level:"L12", tag:"Cost & Advanced", sections:[
+      { title:"Cost + Architecture", items:["Cost Explorer + Budgets","Cost Allocation Tags","Right-sizing + Compute Optimizer","Well-Architected Tool","AWS Organizations + Control Tower","Multi-account strategy","Multi-region high availability","Disaster Recovery: RTO, RPO","FinOps practice"] }
+    ]}
+  ]
+},
+
+/* ── DSA ── */
+dsa: {
+  emoji:"🧠", color:['#e64a19','#fff'],
+  description: "DSA for MERN developers — zero to interview ready. Starts from absolute basics. All problems practised in JavaScript. Focus: Arrays, Strings, Objects (most asked in MERN interviews). Build intuition first, then tackle LeetCode problems.",
+  tags:["JavaScript DSA","MERN interviews","Array manipulation","String manipulation","Object/Map","Beginner friendly","LeetCode"],
+  levels:[
+    { level:"L0", tag:"Foundation — Learn This First", sections:[
+      { title:"What is DSA & Why MERN devs need it", difficulty:"easy", items:[
+        "DSA = how to store data (structures) + how to process it efficiently (algorithms)",
+        "MERN interviews ask DSA to test logical thinking, not just framework knowledge",
+        "Two types of questions: (1) pure coding/algo (LeetCode style) (2) real-world JS manipulation",
+        "You will mostly get Easy + Medium. Hard is rare for MERN roles",
+        "Practice in JavaScript — you already know the language, just learn the patterns"
+      ]},
+      { title:"Big O Notation — Time & Space", difficulty:"easy", items:[
+        "Big O = how fast code slows down as input grows",
+        "O(1) — constant: same speed regardless of input size (array[0], Map.get)",
+        "O(n) — linear: loop through array once",
+        "O(n²) — quadratic: nested loops (loop inside loop) — avoid when possible",
+        "O(log n) — logarithmic: halve search space each step (binary search)",
+        "O(n log n) — sorting algorithms like merge sort, Array.sort()",
+        "Space complexity = extra memory your solution uses",
+        "O(1) space = no extra array/map. O(n) space = created new array/map of size n",
+        "Trade-off: use more space (Map/Set) to get faster time — very common technique"
+      ]},
+      { title:"JS Tools You Need for DSA", difficulty:"easy", items:[
+        "Array: push/pop (O(1)), shift/unshift (O(n)), splice, slice, indexOf, includes",
+        "Array: sort((a,b)=>a-b), reverse(), fill(), flat(), flatMap()",
+        "Array: map, filter, reduce, find, findIndex, some, every",
+        "String: split(''), join(''), trim(), toLowerCase(), charCodeAt(), String.fromCharCode()",
+        "String: includes, startsWith, endsWith, slice, substring, repeat",
+        "Map: new Map(), map.set(k,v), map.get(k), map.has(k), map.delete(k), map.size",
+        "Set: new Set(arr), set.has(v), set.add(v), set.delete(v), set.size",
+        "Object: Object.keys(), Object.values(), Object.entries(), Object.assign(), spread {...}",
+        "Number: Math.max(...arr), Math.min(...arr), Math.abs(), Math.floor(), Math.ceil()",
+        "Infinity and -Infinity — useful for initializing min/max variables"
+      ]},
+      { title:"Problem Solving Framework", difficulty:"easy", items:[
+        "Step 1: Understand — read problem, identify input type and output type",
+        "Step 2: Examples — trace through given examples manually",
+        "Step 3: Brute force first — nested loops O(n²) is fine to start",
+        "Step 4: Optimize — can you use Map/Set to avoid the inner loop?",
+        "Step 5: Code it in JS — write clean, readable solution",
+        "Step 6: Test edge cases — empty array, single element, duplicates, negative numbers",
+        "Common mistake: jumping to code before understanding the problem",
+        "If stuck: solve manually on paper first, then translate to code"
+      ]}
+    ]},
+    { level:"L1", tag:"Arrays — Most Important (Start Here)", sections:[
+      { title:"Array Basics — must know cold", difficulty:"easy", items:[
+        "Access by index: arr[i] — O(1)",
+        "Loop through array: for loop, for...of, forEach",
+        "Find max/min in array — single loop, track running max",
+        "Reverse an array — use two pointers (left, right swap while left < right)",
+        "Check if array is sorted — loop and compare arr[i] > arr[i+1]",
+        "Count occurrences of element — loop + counter",
+        "Sum of all elements — reduce or loop",
+        "Remove duplicates from array — use Set: [...new Set(arr)]",
+        "Flatten nested array — arr.flat() or arr.flat(Infinity)",
+        "Merge two arrays — spread: [...a, ...b] or concat()"
+      ]},
+      { title:"Two Pointer Pattern", difficulty:"easy", items:[
+        "Pattern: use two index variables (left=0, right=n-1) moving toward center",
+        "When to use: sorted array, palindrome check, sum problems",
+        "Reverse Array — swap arr[left] and arr[right], move inward",
+        "Valid Palindrome — ignore non-alphanumeric, compare left and right chars",
+        "Two Sum (sorted array) — move left up if sum too small, right down if too big",
+        "Container With Most Water — always move the shorter side inward",
+        "Remove Duplicates from Sorted Array — slow pointer tracks last unique",
+        "Move Zeroes to end — slow pointer for next non-zero position"
+      ]},
+      { title:"Sliding Window Pattern", difficulty:"easy", items:[
+        "Pattern: maintain a window [left, right] that slides through array",
+        "When to use: subarray/substring problems (longest, minimum, contains)",
+        "Fixed window size k: add right, remove left when window exceeds k",
+        "Variable window: expand right, shrink left when condition breaks",
+        "Maximum sum of subarray of size k — fixed window, update sum",
+        "Longest subarray with sum ≤ k — variable window",
+        "Longest substring without repeating chars — Set + two pointer",
+        "Minimum size subarray sum ≥ target — shrink left while valid"
+      ]},
+      { title:"Prefix Sum Pattern", difficulty:"easy", items:[
+        "Prefix sum: precompute cumulative sums — prefix[i] = prefix[i-1] + arr[i]",
+        "Sum of subarray [i..j] = prefix[j] - prefix[i-1] in O(1)",
+        "When to use: multiple range sum queries, subarray sum problems",
+        "Subarray Sum Equals K — use Map: store prefix sums, find if (currentSum - k) exists",
+        "Range Sum Query — build prefix array once, answer each query O(1)",
+        "Majority Element in range — prefix count arrays"
+      ]},
+      { title:"Easy Problems — solve these first", difficulty:"easy", items:[
+        "Two Sum — use Map: store {value: index} while looping, check if complement exists",
+        "Best Time to Buy/Sell Stock — track minPrice so far, update maxProfit each step",
+        "Contains Duplicate — use Set, return true if set already has element",
+        "Maximum Subarray (Kadane's) — track currentSum, reset to 0 if negative",
+        "Missing Number — expected sum = n*(n+1)/2, subtract actual sum",
+        "Move Zeroes — two pointer: place non-zeros at slow pointer, fill rest with 0",
+        "Find Min/Max — use Math.max(...arr) or loop tracking max variable",
+        "Intersection of Two Arrays — filter arr1 to keep only elements in Set(arr2)",
+        "Plus One — start from end, handle carry, unshift 1 if still carry at end",
+        "Check if array is sorted ascending — every((v,i)=> i===0 || v >= arr[i-1])"
+      ]},
+      { title:"Medium Problems", difficulty:"medium", items:[
+        "Product of Array Except Self — left pass (product of left), right pass (product of right), multiply",
+        "3Sum — sort array, for each i use two pointer to find pairs summing to -arr[i]",
+        "Merge Intervals — sort by start, merge if current start ≤ last end",
+        "Rotate Array k steps — reverse whole array, reverse first k, reverse rest",
+        "Subarray Sum Equals K — prefix sum + Map counting occurrences",
+        "Sort Colors (Dutch Flag) — 3 pointers: low, mid, high for 0s, 1s, 2s",
+        "Find Duplicate Number — Floyd's slow/fast pointer in array treated as linked list",
+        "Rotate Matrix 90° — transpose (swap [i][j] with [j][i]) then reverse each row",
+        "Jump Game — track maxReach, check if current index ≤ maxReach",
+        "Minimum Size Subarray Sum — sliding window, shrink left while sum ≥ target"
+      ]},
+      { title:"Hard Problems", difficulty:"hard", items:[
+        "Trapping Rain Water — two pointer: track leftMax, rightMax, add water at smaller side",
+        "Maximum Product Subarray — track maxProd and minProd (negative × negative = positive)",
+        "First Missing Positive — place each number at index (num-1), then find first mismatch",
+        "Median of Two Sorted Arrays — binary search on smaller array, O(log min(m,n))",
+        "Sliding Window Maximum — monotonic deque (queue stores indices, front = max)"
+      ]}
+    ]},
+    { level:"L2", tag:"Strings — Second Most Asked", sections:[
+      { title:"String Basics in JS", difficulty:"easy", items:[
+        "Strings are immutable in JS — every operation creates new string",
+        "Convert to array: str.split('') — O(n)",
+        "Convert back: arr.join('') — O(n)",
+        "Char code: str.charCodeAt(i), reverse: String.fromCharCode(code)",
+        "Lowercase: str.toLowerCase() — always do this for case-insensitive problems",
+        "Check char is letter: /[a-z]/i.test(char) or (c >= 'a' && c <= 'z')",
+        "Frequency count pattern: const freq = {}; for(const c of s) freq[c] = (freq[c]||0)+1",
+        "Frequency count with Map: const map = new Map(); map.set(c, (map.get(c)||0)+1)"
+      ]},
+      { title:"Easy Problems", difficulty:"easy", items:[
+        "Reverse String — split('').reverse().join('') or two pointer swap",
+        "Valid Palindrome — remove non-alphanumeric with replace, toLower, compare with reversed",
+        "Valid Anagram — sort both strings and compare OR use frequency map",
+        "First Non-Repeating Character — frequency map, then find first with count 1",
+        "Count Vowels — filter with Set of vowels or regex /[aeiou]/gi",
+        "Reverse Words — split(' ').filter(Boolean).reverse().join(' ')",
+        "Valid Parentheses — stack: push open brackets, pop and match on close bracket",
+        "Longest Common Prefix — sort array, compare first and last strings char by char",
+        "Check if rotation — (s1 + s1).includes(s2) && s1.length === s2.length",
+        "Check if strings are anagrams — sort chars and compare"
+      ]},
+      { title:"Medium Problems", difficulty:"medium", items:[
+        "Longest Substring Without Repeating — sliding window + Set, expand right shrink left",
+        "Group Anagrams — sort each string as Map key, push to array",
+        "Longest Palindromic Substring — expand around center (odd + even length)",
+        "Decode String — '3[abc]' → 'abcabcabc' — stack: push count + currentStr on '[', pop on ']'",
+        "Generate Parentheses — backtracking: add '(' if open<n, add ')' if close<open",
+        "Letter Combinations Phone Number — backtracking through digit map",
+        "Count and Say — simulate: count consecutive same digits",
+        "Zigzag Conversion — simulate rows array, toggle direction at top/bottom"
+      ]},
+      { title:"Hard Problems", difficulty:"hard", items:[
+        "Minimum Window Substring — sliding window, two frequency maps (need vs have), shrink when valid",
+        "Longest Valid Parentheses — stack stores indices, max gap between consecutive stack tops",
+        "Regular Expression Matching — 2D DP: handle '.' (any char) and '*' (0 or more prev)",
+        "Palindrome Pairs — for each word check if reverse exists in map or split into two parts"
+      ]}
+    ]},
+    { level:"L3", tag:"Objects & Hash Maps — JS Superpower", sections:[
+      { title:"Object Manipulation (MERN critical)", difficulty:"easy", items:[
+        "Deep clone: JSON.parse(JSON.stringify(obj)) — simple, loses functions/Date",
+        "Deep clone proper: structuredClone(obj) — modern JS, handles Date/Map/Set",
+        "Merge objects: Object.assign({}, obj1, obj2) or { ...obj1, ...obj2 }",
+        "Pick specific keys: const {name, age} = user — destructuring",
+        "Dynamic key access: obj[key] — use when key is variable",
+        "Delete key: delete obj.key — mutates object",
+        "Check key exists: 'key' in obj or obj.hasOwnProperty('key')",
+        "Iterate: Object.keys(obj).forEach(k => ...) or for...in loop",
+        "Group array by property: arr.reduce((acc,item)=>{(acc[item.key]??=[]).push(item);return acc},{})",
+        "Count frequency: arr.reduce((acc,v)=>{acc[v]=(acc[v]||0)+1;return acc},{})",
+        "Transform object: Object.fromEntries(Object.entries(obj).map(([k,v])=>[k, transform(v)]))",
+        "Filter object keys: Object.fromEntries(Object.entries(obj).filter(([k,v])=>condition))"
+      ]},
+      { title:"Map vs Object — when to use which", difficulty:"easy", items:[
+        "Use Map when: keys are not strings (numbers, objects as keys)",
+        "Use Map when: need to preserve insertion order reliably",
+        "Use Map when: frequent add/delete (better performance than Object)",
+        "Use Object when: JSON serialization needed, static known keys, dot notation preferred",
+        "Map iteration: map.forEach((v,k)=>...) or for(const [k,v] of map)",
+        "Convert array to freq Map: arr.reduce((m,v)=>m.set(v,(m.get(v)||0)+1), new Map())",
+        "Convert Map to Object: Object.fromEntries(map)",
+        "Convert Object to Map: new Map(Object.entries(obj))"
+      ]},
+      { title:"Set — uniqueness + O(1) lookup", difficulty:"easy", items:[
+        "Create Set from array (remove duplicates): new Set(arr)",
+        "Convert back: [...new Set(arr)] or Array.from(set)",
+        "Check membership O(1): set.has(value) — much faster than arr.includes()",
+        "Set intersection: new Set([...a].filter(v => b.has(v)))",
+        "Set union: new Set([...a, ...b])",
+        "Set difference (a - b): new Set([...a].filter(v => !b.has(v)))"
+      ]},
+      { title:"Easy Problems", difficulty:"easy", items:[
+        "Two Sum — Map stores {value: index}, check complement before adding",
+        "Word Frequency Count — reduce to freq object or Map",
+        "First Recurring Character — Set, return first char already in Set",
+        "Contains Duplicate — Set.size !== arr.length",
+        "Ransom Note — freq map of magazine, subtract for each ransomNote char",
+        "Majority Element — Map freq, find entry with count > n/2",
+        "Isomorphic Strings — two Maps: s→t and t→s bidirectional mapping",
+        "Group people by age — reduce to object keyed by age"
+      ]},
+      { title:"Medium Problems", difficulty:"medium", items:[
+        "LRU Cache — Map (insertion-order) + delete+re-set trick to move to end",
+        "Top K Frequent Elements — freq Map, sort by value, slice first k",
+        "Subarray Sum Equals K — prefix sum + Map counting how many times each sum appeared",
+        "Find All Anagrams in String — sliding window + freq Map comparison",
+        "Longest Consecutive Sequence — Set of all nums, for each chain start find length",
+        "4Sum II = 0 — Map of all a+b sums, count pairs where -(c+d) exists in map"
+      ]}
+    ]},
+    { level:"L4", tag:"Sorting & Searching — Core Skills", sections:[
+      { title:"Sorting in JS", difficulty:"easy", items:[
+        "Default sort is lexicographic (string) — ALWAYS provide comparator for numbers",
+        "Sort ascending: arr.sort((a,b) => a-b)",
+        "Sort descending: arr.sort((a,b) => b-a)",
+        "Sort objects by property: arr.sort((a,b) => a.age - b.age)",
+        "Sort strings: arr.sort((a,b) => a.localeCompare(b))",
+        "Sort stability: Array.sort is stable in modern JS (preserves equal element order)",
+        "Bubble Sort — O(n²): swap adjacent if out of order, repeat",
+        "Selection Sort — O(n²): find min, swap to front, repeat",
+        "Insertion Sort — O(n²): pick element, insert into correct position in sorted portion",
+        "Merge Sort — O(n log n): split in half, sort each, merge — used by Array.sort",
+        "Quick Sort — O(n log n) avg: pick pivot, partition, recurse on two halves"
+      ]},
+      { title:"Binary Search", difficulty:"easy", items:[
+        "Works ONLY on sorted array",
+        "Template: left=0, right=n-1, while(left<=right): mid=Math.floor((l+r)/2)",
+        "If arr[mid]===target: return mid. If arr[mid]<target: left=mid+1. Else: right=mid-1",
+        "Time: O(log n). Space: O(1)",
+        "Find first/last occurrence — adjust condition to not return on first find",
+        "Search in Rotated Sorted Array — one half is always sorted, check which",
+        "Find Minimum in Rotated Array — binary search toward unsorted side",
+        "Binary search on answer — when looking for min/max valid value (not position)"
+      ]},
+      { title:"Problems", difficulty:"medium", items:[
+        "Sort an array of 0s, 1s, 2s without sort() — Dutch National Flag 3-pointer",
+        "Merge Intervals — sort by start, scan and merge overlapping",
+        "Kth Largest Element — sort descending O(n log n) or use partial quickselect",
+        "Find Peak Element — binary search: go toward larger neighbor",
+        "Search in 2D Matrix — treat as 1D sorted array, map index to row/col"
+      ]}
+    ]},
+    { level:"L5", tag:"Recursion & Problem Patterns", sections:[
+      { title:"Recursion Basics", difficulty:"easy", items:[
+        "Recursion = function calls itself with smaller input until base case",
+        "Every recursion needs: (1) base case — when to stop, (2) recursive case — call with smaller input",
+        "Factorial: if(n<=1) return 1; return n * factorial(n-1)",
+        "Fibonacci: if(n<=1) return n; return fib(n-1)+fib(n-2)",
+        "Sum of array: if(i===arr.length) return 0; return arr[i] + sum(arr, i+1)",
+        "Flatten nested array recursively",
+        "Call stack = recursion depth. Too deep = stack overflow",
+        "Tail call optimization — some engines optimize last-position recursion"
+      ]},
+      { title:"Memoization (cache results)", difficulty:"easy", items:[
+        "Problem with plain recursion: recalculates same subproblems (exponential time)",
+        "Memoization = store result in Map/object, return stored if already computed",
+        "Fibonacci with memo: const cache={}; if(cache[n]) return cache[n]; cache[n]=fib(n-1)+fib(n-2); return cache[n]",
+        "Top-down DP = recursion + memoization",
+        "Bottom-up DP = iterative, fill table from base cases up",
+        "Climbing Stairs — dp[i] = dp[i-1] + dp[i-2], same as Fibonacci",
+        "House Robber — dp[i] = max(dp[i-1], dp[i-2] + arr[i])"
+      ]},
+      { title:"Backtracking Pattern", difficulty:"medium", items:[
+        "Backtracking = try option, recurse, undo if it leads to dead end",
+        "Template: function bt(path, choices): if done push path copy; for each choice: make choice, bt(), undo choice",
+        "Generate all subsets — include or exclude each element",
+        "Generate all permutations — pick each remaining element at each position",
+        "Generate valid parentheses — add '(' if open<n, add ')' if close<open",
+        "Combination Sum — pick element, recurse with same or next, undo",
+        "Letter Combinations of Phone Number — map digits to letters, backtrack"
+      ]}
+    ]},
+    { level:"L6", tag:"Linked List, Stack, Queue — Basics", sections:[
+      { title:"Linked List Concept", difficulty:"easy", items:[
+        "Node = {val, next}. Head = first node. Tail = last node (next=null)",
+        "No index access — must traverse from head: O(n) to reach position",
+        "Insert at head: O(1). Insert at tail: O(n) unless you track tail pointer",
+        "JS doesn't have built-in LL — implement with class Node or plain object",
+        "Most LL interview problems: reverse, find middle, detect cycle, merge"
+      ]},
+      { title:"Easy LL Problems", difficulty:"easy", items:[
+        "Reverse Linked List — prev=null, curr=head, while curr: next=curr.next, curr.next=prev, prev=curr, curr=next",
+        "Find Middle — slow/fast pointer: fast moves 2, slow moves 1, stop when fast hits null",
+        "Detect Cycle — same slow/fast: if they meet, cycle exists",
+        "Merge Two Sorted Lists — compare heads, pick smaller, recurse",
+        "Remove Duplicates from Sorted LL — skip nodes where curr.val === curr.next.val"
+      ]},
+      { title:"Stack & Queue", difficulty:"easy", items:[
+        "Stack = LIFO (Last In First Out). JS: use array with push/pop",
+        "Queue = FIFO (First In First Out). JS: use array with push/shift (or two stacks for O(1))",
+        "Stack use cases: undo/redo, function call stack, bracket matching, DFS",
+        "Queue use cases: BFS traversal, task queues, sliding window",
+        "Valid Parentheses — stack: push open, on close check stack top matches",
+        "Min Stack — secondary stack tracks minimum at each level",
+        "Implement Queue using two stacks — push to stack1, flip to stack2 on dequeue"
+      ]}
+    ]},
+    { level:"L7", tag:"Trees & Graphs — Interview Essentials", sections:[
+      { title:"Binary Tree Basics", difficulty:"easy", items:[
+        "Node = {val, left, right}. Root = top node. Leaf = no children",
+        "DFS traversal: Inorder (left→root→right), Preorder (root→left→right), Postorder (left→right→root)",
+        "BFS (Level Order) — use queue: start with root, push children, process level by level",
+        "DFS with recursion is simplest: function dfs(node): if(!node) return; dfs(node.left); dfs(node.right)",
+        "Height/depth of tree — Math.max(height(left), height(right)) + 1"
+      ]},
+      { title:"Easy Tree Problems", difficulty:"easy", items:[
+        "Maximum Depth — return 0 if null, else 1 + max(depth(left), depth(right))",
+        "Invert Binary Tree — swap left and right at every node recursively",
+        "Same Tree — recursive: val equal AND left same AND right same",
+        "Level Order Traversal (BFS) — queue, process level by level using size snapshot",
+        "Path Sum I — subtract val from target, return true if leaf and target===0",
+        "Symmetric Tree — compare mirror: left.val===right.val, left.left vs right.right, left.right vs right.left"
+      ]},
+      { title:"Medium Tree + Graph", difficulty:"medium", items:[
+        "Validate BST — pass min and max bounds down recursively",
+        "Lowest Common Ancestor — if both targets on same side, go that side; else current is LCA",
+        "Binary Tree Right Side View — BFS, collect last element of each level",
+        "Number of Islands — DFS/BFS, mark visited by changing '1' to '0'",
+        "Course Schedule (cycle detection) — DFS with state: 0=unvisited, 1=visiting, 2=done",
+        "Rotting Oranges — multi-source BFS from all rotten oranges simultaneously"
+      ]}
+    ]},
+    { level:"L8", tag:"Dynamic Programming — Build Slowly", sections:[
+      { title:"DP Mindset", difficulty:"easy", items:[
+        "DP = solve problem by combining solutions to subproblems",
+        "Key question: 'Can this problem be broken into smaller same-shaped problems?'",
+        "Two approaches: (1) Top-down = recursion + memo cache, (2) Bottom-up = fill array iteratively",
+        "Start with recursion, then add memo cache, then convert to bottom-up if needed",
+        "Most common DP types in MERN interviews: 1D array DP, string DP, knapsack variants"
+      ]},
+      { title:"Easy — Start Here", difficulty:"easy", items:[
+        "Fibonacci — dp[i] = dp[i-1] + dp[i-2], base: dp[0]=0, dp[1]=1",
+        "Climbing Stairs — dp[i] = dp[i-1] + dp[i-2] (same pattern as fib)",
+        "House Robber — dp[i] = max(dp[i-1], dp[i-2] + nums[i]) — rob or skip",
+        "Min Cost Climbing Stairs — dp[i] = cost[i] + min(dp[i-1], dp[i-2])",
+        "Is Subsequence — two pointer, greedy match",
+        "Range Sum Query — prefix sum array, answer queries in O(1)"
+      ]},
+      { title:"Medium", difficulty:"medium", items:[
+        "Coin Change — dp[amount] = min coins. dp[0]=0, loop each amount from 1 to target",
+        "Longest Increasing Subsequence — dp[i] = longest ending at i. O(n²) or O(n log n)",
+        "Unique Paths — dp[i][j] = dp[i-1][j] + dp[i][j-1]",
+        "Longest Common Subsequence — 2D DP: if match dp[i][j]=dp[i-1][j-1]+1 else max",
+        "Word Break — dp[i] = can word[0..i] be segmented. Check all splits",
+        "Partition Equal Subset Sum — 0/1 knapsack: can we pick subset summing to total/2"
+      ]},
+      { title:"Hard", difficulty:"hard", items:[
+        "Edit Distance — 2D DP: min of insert/delete/replace to convert s1 to s2",
+        "Burst Balloons — interval DP: choose last balloon to burst in range",
+        "Regular Expression Matching — 2D DP with '.' and '*' cases",
+        "Longest Increasing Path in Matrix — DFS + memoization on each cell"
+      ]}
+    ]},
+    { level:"L9", tag:"MERN-Specific JS Challenges", sections:[
+      { title:"Array of Objects (API data manipulation)", difficulty:"easy", items:[
+        "Filter by condition: users.filter(u => u.active && u.age > 18)",
+        "Transform shape: users.map(u => ({id: u._id, name: u.name}))",
+        "Sort by field: users.sort((a,b) => a.name.localeCompare(b.name))",
+        "Group by field: users.reduce((acc,u)=>{(acc[u.role]??=[]).push(u);return acc},{})",
+        "Find by id: users.find(u => u.id === targetId)",
+        "Aggregate: orders.reduce((sum, o) => sum + o.amount, 0)",
+        "Remove duplicates by field: [...new Map(users.map(u=>[u.id,u])).values()]",
+        "Paginate: arr.slice((page-1)*limit, page*limit)",
+        "Flatten nested: categories.flatMap(c => c.products)",
+        "Check all valid: users.every(u => u.email.includes('@'))"
+      ]},
+      { title:"Async & Data Patterns", difficulty:"medium", items:[
+        "Fetch + transform: fetch('/api/users').then(r=>r.json()).then(users=>users.filter(...))",
+        "Promise.all for parallel fetches: Promise.all(ids.map(id=>fetchUser(id)))",
+        "Batch process array: for(const chunk of chunks(arr, 10)) await processChunk(chunk)",
+        "Debounce search: clear timer on each call, set new timer, execute after delay",
+        "Throttle scroll: execute once per interval, ignore calls within interval",
+        "Infinite scroll data: append new page data to existing array",
+        "Optimistic update: update local state immediately, revert on API error",
+        "Normalize API response: array to object map for O(1) lookup by id"
+      ]},
+      { title:"Common Coding Round Problems for MERN", difficulty:"medium", items:[
+        "Implement debounce(fn, delay) from scratch",
+        "Implement throttle(fn, limit) from scratch",
+        "Implement deep clone without JSON.parse trick (handle circular refs)",
+        "Implement Promise.all from scratch",
+        "Flatten deeply nested object: {a:{b:{c:1}}} → {'a.b.c':1}",
+        "Deep merge two objects",
+        "Implement memoize(fn) — cache results by arguments",
+        "Implement EventEmitter class (on, emit, off methods)",
+        "Implement curry(fn) — convert f(a,b,c) to f(a)(b)(c)",
+        "Convert callback-style function to Promise (promisify)",
+        "Find all paths in nested menu tree (DFS on plain object/array)",
+        "LRU Cache using Map (Map preserves insertion order in JS)"
+      ]}
+    ]}
+  ]
+},
+
+/* ── SYSTEM DESIGN ── */
+sysdesign: {
+  emoji:"🏗️", color:['#7c6af7','#fff'],
+  description: "System Design — designing scalable, reliable distributed systems. Covers fundamentals, components, tradeoffs, and classic interview problems. Essential for senior/staff engineer interviews.",
+  tags:["Distributed systems","Scalability","Reliability","Trade-offs","Senior-level","Architecture"],
+  levels:[
+    { level:"L1", tag:"Fundamentals", sections:[
+      { title:"Network & Protocol Basics", items:[
+        "Client-Server architecture","HTTP/HTTPS methods + status codes","DNS resolution steps (recursive + iterative)","TCP vs UDP: when to use which","IP addressing + subnets basics","REST vs GraphQL vs gRPC","WebSockets vs long polling vs SSE","How a browser loads a webpage (full flow)"
+      ]},
+      { title:"Load Balancing", items:[
+        "What a load balancer does","L4 (transport) vs L7 (application) LB","Algorithms: round-robin, least connections, IP hash, consistent hash","Health checks","Sticky sessions","Horizontal scaling of load balancers"
+      ]},
+      { title:"Caching", items:[
+        "Cache-aside (lazy loading) pattern","Write-through cache","Write-behind (write-back) cache","Read-through cache","Cache eviction: LRU, LFU, FIFO","Cache stampede / thundering herd","CDN as global cache","Browser cache, DNS cache, database query cache"
+      ]}
+    ]},
+    { level:"L2", tag:"Scalability", sections:[
+      { title:"Scaling Concepts", items:[
+        "Vertical scaling (scale up) vs Horizontal scaling (scale out)","Stateless vs Stateful servers","Session affinity challenges","Shared session store (Redis)","Auto-scaling triggers","Geographic distribution"
+      ]},
+      { title:"CAP Theorem + Consistency", items:[
+        "CAP: Consistency, Availability, Partition Tolerance","Can only guarantee 2 of 3","CP systems (e.g. HBase, Zookeeper)","AP systems (e.g. Cassandra, DynamoDB)","ACID vs BASE","Consistency models: strong, eventual, causal, read-your-writes","Linearizability vs serializability"
+      ]},
+      { title:"Database Scaling", items:[
+        "Master-slave (primary-replica) replication","Master-master replication","Sharding strategies: range, hash, directory-based","Shard key selection pitfalls","Database denormalization for read performance","Read/write splitting","Connection pooling"
+      ]}
+    ]},
+    { level:"L3", tag:"Core Components", sections:[
+      { title:"Databases", items:[
+        "SQL vs NoSQL — when to choose which","RDBMS use cases (strong schema, joins, ACID)","Document DB use cases (flexible schema, hierarchical)","Key-value DB use cases (sessions, cache, simple lookup)","Wide-column DB use cases (time-series, analytics)","Graph DB use cases (relationships)","Full-text search (Elasticsearch)","Polyglot persistence"
+      ]},
+      { title:"Caching Layer", items:[
+        "Redis data structures: string, hash, list, set, sorted set, stream","Redis for sessions, rate limiting, pub/sub, leaderboards","Memcached vs Redis","Cache invalidation strategies","Cache coherence in distributed caches","Local in-process cache vs distributed cache"
+      ]},
+      { title:"Message Queues", items:[
+        "Why message queues (decoupling, async, buffer load)","Point-to-point vs pub/sub","Kafka: topics, partitions, consumer groups, offsets, retention","RabbitMQ: exchanges, queues, bindings, AMQP","SQS: managed, at-least-once delivery","At-least-once vs at-most-once vs exactly-once delivery","Dead-letter queues","Backpressure handling"
+      ]},
+      { title:"Rate Limiting", items:[
+        "Token bucket algorithm","Leaky bucket algorithm","Fixed window counter","Sliding window log","Sliding window counter","Distributed rate limiting with Redis","Rate limit by IP, user ID, API key","Rate limit headers in HTTP responses"
+      ]}
+    ]},
+    { level:"L4", tag:"Classic Problems — Small", sections:[
+      { title:"URL Shortener (bit.ly)", items:[
+        "Functional requirements: shorten, redirect, analytics","Non-functional: high availability, low latency, scale","ID generation: base62 encoding of auto-increment or random","DB schema: short_code → long_url + metadata","Cache hot URLs in Redis","Handle redirects (301 vs 302)","Analytics: async write to Kafka","Expiry of URLs","Custom short codes"
+      ]},
+      { title:"Rate Limiter", items:[
+        "Requirements: limit by user/IP, per endpoint","Token bucket in Redis per user","Sliding window log approach","Distributed: Redis atomic INCR + TTL","Response headers: X-RateLimit-Remaining, Retry-After","Graceful degradation vs hard block","Edge rate limiting at API gateway"
+      ]},
+      { title:"Pastebin / Code Share", items:[
+        "Store text/code with unique key","Random key generation + collision handling","S3 or DB for content storage","Expiry + cleanup job","Syntax highlighting (client-side)","Analytics: view count","Paste search (if needed)"
+      ]},
+      { title:"Typeahead / Autocomplete", items:[
+        "Trie data structure for prefix matching","Top-K suggestions per prefix","Pre-compute popular queries offline","Serving from cache (Redis sorted sets)","Client-side debounce (300ms)","Fuzzy matching approach","Scale: partition trie by first char","Real-time trending queries"
+      ]}
+    ]},
+    { level:"L5", tag:"Classic Problems — Medium", sections:[
+      { title:"Twitter / News Feed", items:[
+        "Post tweet, follow/unfollow, home timeline","Fan-out on write (push model) vs fan-out on read (pull)","Hybrid: push to active followers, pull for celebrities","Timeline storage in Redis sorted set (tweet_id + timestamp score)","Infinite scroll + cursor pagination","Tweet storage: Cassandra or DynamoDB","Media: S3 + CDN","Search: Elasticsearch","Trending: count hashtags in sliding window"
+      ]},
+      { title:"Uber / Ride Sharing", items:[
+        "Match rider with nearest driver","Driver location updates: WebSockets + Redis geospatial (GEOADD, GEORADIUS)","Location update frequency: every 4s","Surge pricing: supply/demand ratio per zone","Trip state machine: requested → matched → pickup → in-progress → complete","ETA: routing service (Google Maps API or custom)","Payment: async queue","Notifications: push via APNs/FCM"
+      ]},
+      { title:"Chat Application (WhatsApp)", items:[
+        "1-on-1 messaging + group chat","WebSocket per connection for real-time","Message delivery states: sent → delivered → read","Message storage: Cassandra (time-series partitioned by conversation_id + timestamp)","User presence: Redis + heartbeat","Media: upload to S3, share URL","Push notifications for offline users","End-to-end encryption concept","Message ordering guarantees"
+      ]},
+      { title:"Design Notification System", items:[
+        "Types: push (mobile), email, SMS, in-app","Service per channel: Apple APNs, FCM, Twilio, SendGrid","Event-driven: produce notification events to Kafka","Consumer workers per channel type","User preferences: opt-out, quiet hours","Template engine for message content","Retry with exponential backoff","Observability: delivery rate dashboard"
+      ]}
+    ]},
+    { level:"L6", tag:"Classic Problems — Large", sections:[
+      { title:"Netflix / Video Streaming", items:[
+        "Upload pipeline: ingest → transcode (multiple qualities) → store in S3","Video encoding: H.264, H.265, AV1","Adaptive bitrate streaming: DASH or HLS (manifest + segments)","CDN: CloudFront or Netflix Open Connect boxes","Metadata DB: titles, genres, cast (RDS + Elasticsearch)","Recommendation engine: collaborative filtering offline (Spark)","Viewing history: Cassandra","A/B testing thumbnails","Playback analytics: Kafka → data warehouse"
+      ]},
+      { title:"Google / Web Crawler", items:[
+        "Start with seed URLs in frontier queue","Worker fetches URL, extracts links, stores content","URL frontier: priority queue + politeness (delay per domain)","Distributed: partition frontier by URL hash","Deduplication: Bloom filter for visited URLs","Content storage: HDFS or S3","Parsing: extract text + links","Indexing pipeline: tokenize → inverted index → TF-IDF / BF-IDF","Robots.txt compliance","DNS prefetching","Re-crawl scheduling based on freshness"
+      ]},
+      { title:"Google Drive / File Storage", items:[
+        "Upload: chunked upload, each chunk hashed (deduplication)","Block storage: split files into 4MB blocks","Content-addressable storage: SHA256(block) = block ID","DB: file metadata + block list per file version","Versioning: store block deltas","Real-time sync: long polling or WebSocket","Conflict resolution: last-write-wins or merge","Sharing: ACL per file/folder","Quota management","CDN for fast download of popular blocks"
+      ]},
+      { title:"Search Engine", items:[
+        "Crawling → Content processing → Indexing → Serving","Inverted index: term → list of (doc_id, positions)","Ranking: TF-IDF, BM25, PageRank","Distributed index: partitioned by URL or term","Query parsing: tokenize, stemming, stop-word removal","Query serving: scatter-gather across index shards","Autocomplete: trie + top-K","Query cache: Redis for hot queries","Personalization: user history signals","Ads auction: keyword bidding (separate system)"
+      ]}
+    ]},
+    { level:"L7", tag:"Advanced Concepts", sections:[
+      { title:"Distributed Systems Fundamentals", items:[
+        "Consistent hashing — add/remove nodes with minimal key remaps","Distributed ID generation — Snowflake (timestamp + machine + seq)","Two-phase commit (2PC) — distributed transactions","Saga pattern — choreography vs orchestration","CRDT — conflict-free replicated data types","Vector clocks — causality tracking","Gossip protocol — epidemic state dissemination","Merkle trees — efficient diff detection (Git, DynamoDB)","Bloom filter — probabilistic membership test","HyperLogLog — cardinality estimation"
+      ]},
+      { title:"Consensus & Coordination", items:[
+        "Raft consensus algorithm — leader election + log replication","Paxos concept — multi-phase agree","ZooKeeper — distributed coordination, leader election","etcd — key-value store for k8s configuration","Heartbeats + timeouts for failure detection","Fencing tokens — prevent split-brain writes","Quorum reads/writes — R + W > N","Lease-based locks — distributed mutex"
+      ]},
+      { title:"Event Sourcing & CQRS", items:[
+        "Event sourcing — store events not current state","Event store as append-only log","Projections — rebuild state from events","CQRS — separate read/write models","Eventual consistency in CQRS","Outbox pattern — reliable event publishing","Idempotency keys — safe retry","Saga orchestration with event store"
+      ]},
+      { title:"Observability & SRE", items:[
+        "Three pillars: Metrics, Logs, Traces","SLI: Service Level Indicator (measured)","SLO: Service Level Objective (target)","SLA: Service Level Agreement (contract)","Error budget concept","Golden signals: latency, traffic, errors, saturation","On-call runbooks","Circuit breaker (closed, open, half-open)","Bulkhead pattern","Chaos engineering (Chaos Monkey)"
+      ]}
+    ]},
+    { level:"L8", tag:"Architecture Styles", sections:[
+      { title:"Architecture Patterns", items:[
+        "Monolith — simple, coupled, single deploy","Microservices — independent services, separate DBs","Service Mesh (Istio, Linkerd) — sidecar proxy","Serverless — function-as-a-service, event-driven","Event-driven architecture — producers + consumers","Hexagonal (Ports & Adapters) — testable core","CQRS + Event Sourcing","BFF (Backend for Frontend) pattern","API Gateway as single entry point","Strangler Fig pattern for migration"
+      ]},
+      { title:"Multi-region & DR", items:[
+        "Active-Active vs Active-Passive","RPO (Recovery Point Objective) — max data loss","RTO (Recovery Time Objective) — max downtime","Blue-green deployment — zero-downtime","Canary deployment — gradual rollout","Feature flags for safe release","Database migration strategies — expand/contract","Global tables (DynamoDB, CockroachDB)","Geo-routing with Route 53","Disaster recovery drills"
+      ]}
+    ]}
+  ]
+},
+
+/* ── INTERVIEW Q ── */
+interviewq: {
+  emoji:"🎯", color:['#e91e8c','#fff'],
+  description: "Top interview questions per technology. Mark each as 'prepared' when you can answer it confidently without notes. These are the most commonly asked questions in FAANG and product company interviews.",
+  tags:["FAANG prep","Technical interviews","Behavioral","System design","Coding rounds","HR rounds"],
+  levels:[
+    { level:"JavaScript", tag:"Top 25 JS Interview Q", sections:[
+      { title:"Core Language", items:[
+        "What is the event loop? Explain call stack, macrotask, microtask queues",
+        "Difference between var, let, const — scoping and hoisting",
+        "What is a closure? Write an example and explain a real use case",
+        "How does the prototype chain work? What is prototypal inheritance?",
+        "How does 'this' behave differently in arrow vs regular functions?",
+        "What is hoisting? Does it apply to functions, var, let, const?",
+        "Difference between == and ===. When does == do type coercion?",
+        "What is the temporal dead zone (TDZ)?",
+        "Explain call, apply, and bind with examples"
+      ]},
+      { title:"Async & Advanced", items:[
+        "What is a Promise? Difference between .all, .allSettled, .any, .race",
+        "Explain async/await. How does error handling work?",
+        "What is debounce vs throttle? Implement both from scratch",
+        "Implement a memoize function",
+        "Implement deep clone of an object (handle nested objects/arrays/date/etc)",
+        "What is currying? Implement curry(fn)(a)(b)(c)",
+        "Explain event bubbling and capturing. What is event delegation?",
+        "What are WeakMap and WeakSet? When would you use them?",
+        "What is a generator function? Write an infinite sequence generator",
+        "How does garbage collection work in JavaScript (V8)?"
+      ]},
+      { title:"Practical", items:[
+        "Implement Promise.all from scratch",
+        "Implement debounce from scratch",
+        "Flatten a deeply nested array without Array.flat",
+        "Implement your own Array.map",
+        "What is the output of: console.log(0.1 + 0.2 === 0.3) and why?",
+        "Explain module systems (ESM vs CommonJS) — key differences"
+      ]}
+    ]},
+    { level:"React", tag:"Top 25 React Interview Q", sections:[
+      { title:"Core Concepts", items:[
+        "What is the Virtual DOM? How does React reconciliation work?",
+        "What is React Fiber? How does it enable concurrent rendering?",
+        "When does a React component re-render? All 4 triggers",
+        "Difference between useState and useReducer — when to use which?",
+        "What is the purpose of the useEffect cleanup function?",
+        "Difference between useMemo and useCallback — common misuse?",
+        "Controlled vs uncontrolled components — tradeoffs",
+        "Why are keys important in lists? What happens with bad keys?",
+        "How do Error Boundaries work? Limitations?",
+        "Explain React Context — when to use vs Redux/Zustand"
+      ]},
+      { title:"Hooks & Patterns", items:[
+        "What are React Portals? Use case example",
+        "How does React.memo work? When does it NOT help?",
+        "useRef vs useState — when each makes sense",
+        "What is a Higher-Order Component? Render props? Compare them",
+        "What is a stale closure in hooks? How to fix it?",
+        "Why can't you call hooks conditionally? (Rules of Hooks reason)",
+        "Difference between useLayoutEffect and useEffect — execution timing",
+        "How does React 18 handle automatic batching?",
+        "What is useTransition? useDeferredValue? When to use?"
+      ]},
+      { title:"Architecture & Performance", items:[
+        "Server Components vs Client Components (Next.js App Router)",
+        "How would you diagnose and fix a slow React app? Tools?",
+        "What is hydration in SSR? What is hydration mismatch?",
+        "How would you implement infinite scroll in React?",
+        "Explain the compound components pattern with example",
+        "What is code splitting in React? How does React.lazy work?"
+      ]}
+    ]},
+    { level:"Node.js", tag:"Top 20 Node Interview Q", sections:[
+      { title:"Core", items:[
+        "Explain Node.js event loop phases in order (timers, I/O, etc.)",
+        "Difference between process.nextTick and setImmediate — execution order",
+        "What are streams? Four types? Why use them?",
+        "What is backpressure in streams? How to handle it?",
+        "Cluster module vs Worker Threads — difference and use cases",
+        "How does Node handle thousands of concurrent connections with one thread?",
+        "How do you handle uncaughtException and unhandledRejection?",
+        "Difference between require() and dynamic import() in Node"
+      ]},
+      { title:"Express & Architecture", items:[
+        "How does middleware work in Express? What does next() do?",
+        "JWT vs session-based authentication — tradeoffs in Node",
+        "How would you implement rate limiting in an Express app?",
+        "How do you detect and fix a memory leak in Node.js?",
+        "What is the difference between synchronous and async file operations — when matters?",
+        "How would you implement a background job queue in Node?",
+        "How do you do graceful shutdown in Node.js?"
+      ]},
+      { title:"Scaling & Production", items:[
+        "How do you scale a Node.js application?",
+        "What is PM2? How does it help in production?",
+        "Explain the N+1 query problem and how to fix it in an ORM",
+        "How would you structure a large Node.js REST API project?"
+      ]}
+    ]},
+    { level:"MySQL", tag:"Top 20 MySQL Interview Q", sections:[
+      { title:"Querying", items:[
+        "INNER JOIN vs LEFT JOIN vs RIGHT JOIN — with example",
+        "What is a composite index? Does column order matter?",
+        "Explain ACID properties with a real-world example each",
+        "Difference between TRUNCATE, DELETE, DROP — when to use each",
+        "Difference between HAVING and WHERE — execution order",
+        "What is the N+1 query problem in SQL?",
+        "CTE vs subquery vs temp table — when to choose which?",
+        "Write a query to get the Nth highest salary (window function)"
+      ]},
+      { title:"Performance & Design", items:[
+        "What is an execution plan? How to read EXPLAIN output?",
+        "When does MySQL NOT use an index? (6 common cases)",
+        "What is normalization? Explain 1NF, 2NF, 3NF with examples",
+        "What are window functions? Give ROW_NUMBER, RANK, LAG examples",
+        "How would you optimize a slow query? Step-by-step",
+        "Difference between InnoDB and MyISAM (for exams/older interviews)"
+      ]},
+      { title:"Transactions & Advanced", items:[
+        "What are isolation levels? What problem does each solve?",
+        "What is a deadlock? How to detect and prevent?",
+        "Stored procedure vs function vs trigger — differences",
+        "How does MySQL full-text search work?",
+        "What is database sharding? When to shard?"
+      ]}
+    ]},
+    { level:"MongoDB", tag:"Top 20 MongoDB Interview Q", sections:[
+      { title:"Fundamentals", items:[
+        "When to embed vs reference documents? Decision criteria",
+        "Types of indexes in MongoDB — when to use each",
+        "Explain the aggregation pipeline — 5 most important stages",
+        "What is $lookup? What are its performance limitations?",
+        "How does MongoDB handle transactions? What is required?",
+        "Difference between replica set and sharding",
+        "How to choose a good shard key — criteria"
+      ]},
+      { title:"Design & Advanced", items:[
+        "What is Write Concern and Read Concern?",
+        "Difference between $set, $push, $addToSet in update",
+        "How does $unwind work? When would you use it?",
+        "What are change streams? Give a real use case",
+        "What is a covered query? How to create one?",
+        "Explain the bucket pattern for time-series data",
+        "How would you model a many-to-many relationship?",
+        "What is GridFS? When would you use it vs S3?",
+        "How does Atlas Search differ from MongoDB text index?",
+        "How would you design a schema for a social network (posts, likes, comments)?"
+      ]}
+    ]},
+    { level:"AWS", tag:"Top 20 AWS Interview Q", sections:[
+      { title:"Core Services", items:[
+        "EC2 vs Lambda — when to use which? Tradeoffs",
+        "Explain VPC, subnet, security group, NACL — and differences",
+        "RDS Multi-AZ vs Read Replica — different purposes",
+        "S3 storage classes and lifecycle policies — cost optimization",
+        "How does CloudFront work with an S3 origin? What is OAC?",
+        "IAM roles vs users vs policies — best practices",
+        "SQS vs SNS vs EventBridge — when to use each"
+      ]},
+      { title:"Architecture", items:[
+        "ECS vs EKS vs Fargate — when to choose which",
+        "How does ALB differ from NLB?",
+        "VPC Peering vs Transit Gateway vs PrivateLink — differences",
+        "How does KMS envelope encryption work?",
+        "CloudFormation vs CDK vs Terraform — tradeoffs",
+        "How do you achieve high availability on AWS? (multi-AZ + multi-region)"
+      ]},
+      { title:"Serverless & Cost", items:[
+        "What is Lambda cold start? How to reduce it?",
+        "How does Route 53 failover routing work?",
+        "DynamoDB provisioned vs on-demand — when to switch?",
+        "How would you design a fully serverless REST API on AWS?",
+        "What is the AWS Shared Responsibility Model?",
+        "Cost optimization strategies — top 5 practical tips"
+      ]}
+    ]},
+    { level:"Design Patterns", tag:"Top 20 Design Pattern Interview Q", sections:[
+      { title:"Creational", items:[
+        "What is Singleton pattern? Implement thread-safe Singleton in JS. When to use and avoid?",
+        "Factory vs Abstract Factory — explain difference with real code example",
+        "What is Builder pattern? Show building a complex object step by step",
+        "Prototype pattern (GoF) vs JS prototype chain — how are they different?",
+        "When would you use Object Pool pattern? Real Node.js example"
+      ]},
+      { title:"Structural", items:[
+        "Explain Decorator pattern. Show adding logging to a function without modifying it",
+        "What is Facade pattern? Give an example in Node.js (e.g. payment SDK wrapper)",
+        "Adapter pattern — convert one interface to another. Real use case?",
+        "What is Proxy pattern? Show with ES6 Proxy. How does Nginx use this concept?",
+        "Module pattern — what problem does it solve? How does ES6 module differ?"
+      ]},
+      { title:"Behavioral", items:[
+        "Explain Observer vs Pub-Sub — are they the same? Key difference?",
+        "Strategy pattern — implement sorting with swappable algorithm at runtime",
+        "How does Express middleware use Chain of Responsibility pattern?",
+        "Command pattern — implement undo/redo system with it",
+        "What is Mediator pattern? How does Redux act as a mediator?"
+      ]},
+      { title:"Applied & Architecture", items:[
+        "What is MVC? How does Express + React form an MVC-like system?",
+        "What is SOLID? Give one real violation example for each principle",
+        "What is the difference between DRY and YAGNI? When do they conflict?",
+        "When would you choose composition over inheritance? Real example",
+        "Identify which design pattern is used: React Context, EventEmitter, Redux, Express middleware"
+      ]}
+    ]}
+  ]
+},
+
+typescript: {
+  emoji:"🔷", color:['#3178c6','#fff'],
+  description: "TypeScript is a strongly-typed superset of JavaScript. Adds static types, interfaces, generics, and compile-time error checking. Used in almost every professional MERN stack project today — React with TS, Express with TS, and Node.js microservices.",
+  tags:["Static typing","Type safety","Interfaces","Generics","React+TS","Node+TS","Compile-time errors"],
+  levels:[
+    { level:"L1", tag:"TypeScript Basics", sections:[
+      { title:"Setup & Config", items:[
+        "Install: npm i -D typescript ts-node @types/node",
+        "tsc --init — generate tsconfig.json",
+        "tsconfig key options: target, module, strict, outDir, rootDir, esModuleInterop",
+        "strict mode: enables strictNullChecks, noImplicitAny, strictFunctionTypes",
+        "ts-node for running TS directly in Node",
+        "ts-node-dev for dev server with auto-restart",
+        "Vite auto-supports TS — no extra config needed",
+        "File extensions: .ts (logic), .tsx (JSX/React)"
+      ]},
+      { title:"Primitive Types", items:[
+        "string, number, boolean, null, undefined, symbol, bigint",
+        "Type annotation: const name: string = 'Ketki'",
+        "Type inference — TS infers type from assignment, no need to annotate",
+        "any — disables type checking (avoid — defeats purpose of TS)",
+        "unknown — safer than any, must narrow before use",
+        "never — type that never occurs (function that always throws, empty union)",
+        "void — function returns nothing",
+        "Literal types: const status: 'active' | 'inactive' = 'active'"
+      ]},
+      { title:"Arrays & Objects", items:[
+        "Array: string[] or Array<string>",
+        "Tuple: [string, number] — fixed length + types",
+        "Object type: { name: string; age: number }",
+        "Optional property: { name: string; age?: number }",
+        "Readonly: { readonly id: string; name: string }",
+        "Index signature: { [key: string]: number } — any string key",
+        "Record<string, number> — shorthand for index signature",
+        "Nested objects: fully type each level"
+      ]}
+    ]},
+    { level:"L2", tag:"Interfaces & Types", sections:[
+      { title:"Interface", items:[
+        "interface User { id: number; name: string; email: string }",
+        "Optional: email?: string",
+        "Readonly: readonly id: number",
+        "Method signature: greet(name: string): string",
+        "Extending: interface Admin extends User { role: string }",
+        "Implementing in class: class UserService implements IUserService {}",
+        "Declaration merging — two interface blocks with same name merge",
+        "Interface vs Type alias — key differences"
+      ]},
+      { title:"Type Aliases", items:[
+        "type UserID = string | number",
+        "type Status = 'active' | 'inactive' | 'banned' — union literal",
+        "type Point = { x: number; y: number }",
+        "Intersection: type AdminUser = User & Admin",
+        "type vs interface: type can't be merged, interface can; both work for objects",
+        "Prefer interface for objects/classes. Prefer type for unions, tuples, primitives",
+        "Discriminated union: type Shape = {kind:'circle';r:number} | {kind:'rect';w:number;h:number}"
+      ]},
+      { title:"Enums", items:[
+        "Numeric enum: enum Direction { Up=0, Down=1, Left=2, Right=3 }",
+        "String enum: enum Status { Active='ACTIVE', Inactive='INACTIVE' }",
+        "const enum — inlined at compile time, no runtime object",
+        "Enum vs union literal type — prefer union type in modern TS",
+        "Access: Direction.Up, Status.Active"
+      ]}
+    ]},
+    { level:"L3", tag:"Functions & Generics", sections:[
+      { title:"Function Types", items:[
+        "Parameter types: function greet(name: string): string",
+        "Optional params: function log(msg: string, level?: string): void",
+        "Default params: function connect(host: string, port = 3000): void",
+        "Rest params: function sum(...nums: number[]): number",
+        "Function type alias: type Handler = (req: Request, res: Response) => void",
+        "Overloads — multiple signatures for same function",
+        "Arrow function type: const add: (a: number, b: number) => number = (a,b) => a+b"
+      ]},
+      { title:"Generics", items:[
+        "Generic function: function identity<T>(arg: T): T { return arg }",
+        "Generic interface: interface ApiResponse<T> { data: T; status: number; message: string }",
+        "Generic class: class Stack<T> { private items: T[] = [] }",
+        "Multiple generics: function pair<K,V>(key: K, val: V): [K,V]",
+        "Constraint: function getLength<T extends { length: number }>(arg: T): number",
+        "keyof constraint: function getProp<T, K extends keyof T>(obj: T, key: K): T[K]",
+        "Default generic: interface Config<T = string> { value: T }",
+        "Generic with Promise: async function fetchUser(id: number): Promise<User>"
+      ]},
+      { title:"Utility Types", items:[
+        "Partial<T> — all properties optional: Partial<User>",
+        "Required<T> — all properties required",
+        "Readonly<T> — all properties readonly",
+        "Pick<T, K> — select subset: Pick<User, 'id' | 'name'>",
+        "Omit<T, K> — exclude subset: Omit<User, 'password'>",
+        "Record<K, V> — object with keys K and values V",
+        "Exclude<T, U> — remove types from union",
+        "Extract<T, U> — keep matching types from union",
+        "NonNullable<T> — remove null and undefined",
+        "ReturnType<T> — extract return type of function",
+        "Parameters<T> — extract parameter types of function",
+        "Awaited<T> — unwrap Promise type: Awaited<Promise<string>> = string"
+      ]}
+    ]},
+    { level:"L4", tag:"TypeScript with React", sections:[
+      { title:"Typing Props", items:[
+        "interface ButtonProps { label: string; onClick: () => void; disabled?: boolean }",
+        "const Button: React.FC<ButtonProps> = ({ label, onClick }) => ...",
+        "Alternative: function Button({ label }: ButtonProps) {} — preferred over FC",
+        "Children prop: { children: React.ReactNode }",
+        "Event types: React.MouseEvent<HTMLButtonElement>",
+        "Change event: React.ChangeEvent<HTMLInputElement>",
+        "Form event: React.FormEvent<HTMLFormElement>",
+        "Key event: React.KeyboardEvent<HTMLInputElement>"
+      ]},
+      { title:"Typing Hooks", items:[
+        "useState with type: const [user, setUser] = useState<User | null>(null)",
+        "useRef: const ref = useRef<HTMLInputElement>(null)",
+        "useReducer: type Action = {type:'SET_USER';payload:User} | {type:'LOGOUT'}",
+        "useContext with typed context: createContext<AuthContextType | null>(null)",
+        "Custom hook return type: function useAuth(): { user: User | null; login: (c: Credentials) => Promise<void> }",
+        "Generic custom hook: function useFetch<T>(url: string): { data: T | null; loading: boolean; error: string | null }"
+      ]},
+      { title:"Advanced React TS", items:[
+        "Generic component: function List<T extends { id: number }>({ items }: { items: T[] })",
+        "ComponentPropsWithRef — extend native element props",
+        "forwardRef with types: React.forwardRef<HTMLInputElement, InputProps>",
+        "Discriminated union props: show different props based on variant",
+        "Template literal types for className generation",
+        "as const for strict readonly arrays (useful for tab configs)",
+        "Typing React.lazy + Suspense",
+        "Type guard in component: if (!user) return null — narrows User | null to User"
+      ]}
+    ]},
+    { level:"L5", tag:"TypeScript with Node.js", sections:[
+      { title:"Express + TypeScript", items:[
+        "Install: @types/express @types/node",
+        "Request with typed body: Request<{}, {}, CreateUserDto>",
+        "Response: Response<ApiResponse<User>>",
+        "Typed route params: Request<{ id: string }>",
+        "Typed query: Request<{}, {}, {}, { page: string; limit: string }>",
+        "Custom Request type with user: interface AuthRequest extends Request { user?: JwtPayload }",
+        "Typed middleware: RequestHandler type from express",
+        "Error handling middleware: ErrorRequestHandler"
+      ]},
+      { title:"DTOs & Validation", items:[
+        "DTO = Data Transfer Object — typed shape of request body",
+        "class-validator + class-transformer for DTO validation",
+        "@IsString(), @IsEmail(), @IsNotEmpty(), @MinLength(8)",
+        "validateOrReject(dto) — throw if validation fails",
+        "plainToInstance(CreateUserDto, req.body) — transform plain obj to class",
+        "Zod with TS: const schema = z.object({name: z.string()}); type User = z.infer<typeof schema>",
+        "Zod.infer extracts TypeScript type from schema — single source of truth"
+      ]},
+      { title:"Type-safe DB Layer", items:[
+        "TypeORM entities with full TS decorators",
+        "Mongoose with TypeScript: Schema + Document type",
+        "Prisma — generates TS types automatically from schema (best TS DX)",
+        "Generic repository pattern with TypeScript",
+        "Typed environment variables: define interface for process.env",
+        "Declaration merging to extend Express namespace",
+        "Path aliases in tsconfig: @/models, @/utils"
+      ]}
+    ]},
+    { level:"L6", tag:"Advanced TypeScript", sections:[
+      { title:"Type Narrowing", items:[
+        "typeof guard: if(typeof x === 'string')",
+        "instanceof guard: if(x instanceof Error)",
+        "in operator: if('name' in obj)",
+        "Discriminated union + switch — exhaustive check",
+        "User-defined type guard: function isUser(x: unknown): x is User",
+        "Assertion functions: function assert(cond: boolean): asserts cond",
+        "Nullish checks: if(user != null) — narrows null | undefined away",
+        "Exhaustive check with never: const _: never = x — catches unhandled cases"
+      ]},
+      { title:"Mapped & Conditional Types", items:[
+        "Mapped type: type Optional<T> = { [K in keyof T]?: T[K] }",
+        "Mapped with remapping: { [K in keyof T as `get${Capitalize<K>}`]: () => T[K] }",
+        "Conditional type: type IsString<T> = T extends string ? true : false",
+        "infer keyword: type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never",
+        "Distributive conditionals over union types",
+        "Template literal types: type EventName = `on${Capitalize<string>}`",
+        "Deep Partial: recursive mapped type",
+        "Readonly deep recursive type"
+      ]},
+      { title:"Decorators (experimental)", items:[
+        "Enable: experimentalDecorators + emitDecoratorMetadata in tsconfig",
+        "Class decorator: @Controller('/users')",
+        "Method decorator: @Get('/:id')",
+        "Property decorator: @Column()",
+        "Parameter decorator: @Body(), @Param()",
+        "Decorator factory: @MinLength(8) returns actual decorator",
+        "reflect-metadata — stores type info for decorators",
+        "Used by: TypeORM, NestJS, class-validator, inversify"
+      ]}
+    ]}
+  ]
+},
+
+behavioral: {
+  emoji:"🎭", color:['#43a047','#fff'],
+  description: "Behavioral and HR interview preparation. These questions assess soft skills, culture fit, problem-solving mindset, and career motivation. Every company — startup to FAANG — asks these. Master the STAR method and prepare 10+ stories from real experience.",
+  tags:["STAR method","Soft skills","Culture fit","Leadership","Conflict resolution","Career motivation","HR round"],
+  levels:[
+    { level:"L1", tag:"STAR Method — Answer Framework", sections:[
+      { title:"What is STAR", items:[
+        "STAR = Situation, Task, Action, Result — structured way to answer behavioral questions",
+        "Situation: set the context (1-2 sentences — where, when, what team)",
+        "Task: what was your responsibility or the challenge",
+        "Action: what YOU specifically did (use 'I', not 'we')",
+        "Result: quantify outcome if possible (improved by 30%, reduced bugs by 50%, shipped on time)",
+        "Keep answer 2-3 minutes long — not too short, not rambling",
+        "Prepare 8-10 stories from real projects that can be adapted to different questions",
+        "Good story types: solved a hard bug, led a feature, disagreed with team, failed and learned, helped someone, worked under pressure"
+      ]},
+      { title:"Prepare Your Stories", items:[
+        "Story 1: Technical challenge — hardest bug you solved",
+        "Story 2: Project ownership — something you built end to end",
+        "Story 3: Conflict — disagreement with teammate or manager and how resolved",
+        "Story 4: Failure — something that went wrong and what you learned",
+        "Story 5: Leadership — time you led without authority",
+        "Story 6: Collaboration — working with difficult person or cross-team",
+        "Story 7: Ambiguity — unclear requirements, how you handled it",
+        "Story 8: Impact — most impactful thing you shipped or improved",
+        "Story 9: Learning fast — picked up new tech/tool quickly",
+        "Story 10: Deadline pressure — shipped under tight timeline"
+      ]}
+    ]},
+    { level:"L2", tag:"Most Common Questions — Prepare These", sections:[
+      { title:"About Yourself", items:[
+        "Tell me about yourself — 2 min pitch: background → current role → why this opportunity",
+        "Walk me through your resume — highlight impact, not just responsibilities",
+        "What are you currently working on? — describe tech stack + your contribution",
+        "Why are you looking for a new opportunity? — be honest, stay positive",
+        "Where do you see yourself in 5 years? — growth-oriented, not 'your job' as answer",
+        "What are your strengths? — pick 2-3 with specific examples",
+        "What are your weaknesses? — real weakness + concrete steps to improve (never say 'I work too hard')"
+      ]},
+      { title:"Behavioral (STAR answers)", items:[
+        "Tell me about a time you faced a challenging technical problem — Story 1",
+        "Describe a situation where you disagreed with your team/manager — Story 3",
+        "Tell me about a time you failed — what happened and what did you learn? — Story 4",
+        "Give an example of when you had to work under tight deadline pressure — Story 10",
+        "Tell me about a time you worked with a difficult coworker — Story 6",
+        "Describe a time you took initiative without being asked — Story 5",
+        "Tell me about your most impactful project — Story 8",
+        "How do you handle ambiguous requirements? Give example — Story 7",
+        "Tell me about a time you had to learn something new quickly — Story 9",
+        "Describe a project you're most proud of — Story 2"
+      ]},
+      { title:"Company & Role Fit", items:[
+        "Why do you want to work here? — research company: product, tech stack, culture, mission",
+        "Why this role? — connect your skills to job description specifically",
+        "What do you know about our product/company? — show you did research",
+        "What motivates you? — align with company's type of work",
+        "How do you stay up to date with technology? — blogs, courses, side projects, communities",
+        "What type of work environment do you prefer? — remote/hybrid/onsite + culture",
+        "Do you prefer working alone or in a team? — answer: both, with example of each",
+        "What's your preferred development methodology? — agile/scrum knowledge helps"
+      ]},
+      { title:"Technical Mindset Questions", items:[
+        "How do you approach debugging a production issue at 2am? — systematic, calm, escalation",
+        "How do you handle code reviews — giving and receiving feedback?",
+        "How do you prioritize when multiple urgent tasks come at once?",
+        "How do you ensure code quality in your team?",
+        "What do you do when you're stuck on a problem for too long?",
+        "How do you handle technical debt vs feature pressure?",
+        "Describe your ideal development workflow (git, testing, deployment)",
+        "How do you communicate technical decisions to non-technical stakeholders?"
+      ]}
+    ]},
+    { level:"L3", tag:"Questions to Ask the Interviewer", sections:[
+      { title:"About the Role & Team", items:[
+        "What does a typical day look like for this role?",
+        "What's the biggest challenge the team is facing right now?",
+        "How does the team handle technical debt?",
+        "What does the onboarding process look like?",
+        "What's the team size and how is work distributed?",
+        "How do you measure success for this role in the first 3/6/12 months?",
+        "What's the code review process like?"
+      ]},
+      { title:"About Growth & Culture", items:[
+        "What opportunities for learning and growth are available?",
+        "How does the engineering team stay current with new technologies?",
+        "What's the biggest technical challenge you've faced this year?",
+        "How is performance evaluated?",
+        "What's the deployment frequency — how often do you ship?",
+        "What do you like most about working here?",
+        "Why is this position open — new role or backfill?"
+      ]}
+    ]},
+    { level:"L4", tag:"Salary & Offer Negotiation", sections:[
+      { title:"Salary Discussion", items:[
+        "Research market rate first: Glassdoor, Levels.fyi, LinkedIn Salary, AmbitionBox (India)",
+        "Never give number first if possible — 'I'd like to understand full package before discussing'",
+        "If forced: give range with bottom being your actual minimum",
+        "Include equity/ESOPs, bonus, benefits in total comp calculation",
+        "For MERN in India: Junior ₹4-8L, Mid ₹8-18L, Senior ₹18-35L, Senior+ ₹35L+ (2024 est)",
+        "For MERN global/remote: $80-150k USD depending on exp and company size",
+        "After offer: 'I'm very excited, can I have 24-48 hours to review?'",
+        "Counter offer: 'Based on my research and experience, I was expecting X. Is there flexibility?'"
+      ]},
+      { title:"Negotiation Tips", items:[
+        "Always negotiate — companies expect it, rarely rescind offers for polite negotiation",
+        "Have competing offer or referral number as leverage if you have one",
+        "Negotiate base salary first, then ask about everything else",
+        "Ask about: signing bonus, stock vesting schedule, remote work flexibility, learning budget",
+        "Never accept on the spot — always ask for time to review",
+        "Get offer in writing before resigning from current job",
+        "Evaluate: growth opportunity > salary if early career"
+      ]}
+    ]}
+  ]
+},
+
+git: {
+  emoji:"🌿", color:['#f05032','#fff'],
+  description: "Git is the industry-standard version control system. Every developer must know Git workflows, branching strategies, and collaboration patterns. MERN interviews often ask about Git — especially team workflows, conflict resolution, and CI/CD integration.",
+  tags:["Version control","Branching","Merge vs Rebase","GitHub","Pull requests","CI/CD","Team workflow"],
+  levels:[
+    { level:"L1", tag:"Core Commands — Must Know", sections:[
+      { title:"Setup & Basics", items:[
+        "git init — create new repo",
+        "git clone <url> — copy remote repo",
+        "git status — show working tree state",
+        "git add <file> or git add . — stage changes",
+        "git commit -m 'message' — save snapshot",
+        "git log — view commit history",
+        "git log --oneline --graph — visual branch history",
+        "git diff — show unstaged changes",
+        "git diff --staged — show staged changes",
+        ".gitignore — list files/folders to ignore (node_modules, .env, dist)"
+      ]},
+      { title:"Branching", items:[
+        "git branch — list local branches",
+        "git branch feature/login — create branch",
+        "git checkout feature/login — switch to branch",
+        "git checkout -b feature/login — create + switch (shortcut)",
+        "git switch -c feature/login — modern syntax (same as above)",
+        "git branch -d feature/login — delete merged branch",
+        "git branch -D feature/login — force delete unmerged branch",
+        "HEAD = pointer to current commit. detached HEAD = not on any branch"
+      ]},
+      { title:"Remote & Sync", items:[
+        "git remote -v — show remotes",
+        "git remote add origin <url> — link local to remote",
+        "git push origin main — push branch to remote",
+        "git push -u origin feature/login — push + set upstream (first push)",
+        "git pull — fetch + merge remote changes",
+        "git fetch — fetch without merging (safe preview)",
+        "git pull --rebase — fetch + rebase instead of merge (cleaner history)",
+        "git push --force-with-lease — safer force push (fails if someone else pushed)"
+      ]}
+    ]},
+    { level:"L2", tag:"Merge, Rebase & Conflicts", sections:[
+      { title:"Merge vs Rebase", items:[
+        "git merge feature/login — merge feature into current branch (creates merge commit)",
+        "Merge creates merge commit — preserves true history of when branches diverged",
+        "git rebase main — replay your commits on top of main (linear history)",
+        "Rebase: cleaner history but rewrites commit hashes — never rebase shared branches",
+        "Fast-forward merge: no merge commit when no divergence (just moves pointer)",
+        "--no-ff flag: force merge commit even when fast-forward possible (keeps feature grouping)",
+        "Use merge for: long-lived branches, public branches",
+        "Use rebase for: local cleanup before PR, keeping feature branch updated with main"
+      ]},
+      { title:"Conflict Resolution", items:[
+        "Conflict = same lines edited in both branches",
+        "Git marks conflict: <<<<<<< HEAD (your change) ======= (their change) >>>>>>> branch",
+        "Resolve: choose one, combine, or write new code; delete all markers",
+        "After resolving: git add <file> then git commit (merge) or git rebase --continue",
+        "git mergetool — open visual merge tool (VSCode, vimdiff)",
+        "Abort merge: git merge --abort",
+        "Abort rebase: git rebase --abort",
+        "Prevention: pull frequently, keep branches short-lived, communicate with team"
+      ]},
+      { title:"Undoing Changes", items:[
+        "git restore <file> — discard unstaged changes",
+        "git restore --staged <file> — unstage file (keep changes)",
+        "git reset HEAD~1 — undo last commit, keep changes staged",
+        "git reset --soft HEAD~1 — undo commit, keep changes staged",
+        "git reset --mixed HEAD~1 — undo commit, unstage changes (default)",
+        "git reset --hard HEAD~1 — undo commit, DISCARD changes (destructive)",
+        "git revert <hash> — create new commit that undoes previous (safe for shared branches)",
+        "git stash — save work in progress without committing",
+        "git stash pop — restore stashed changes",
+        "git cherry-pick <hash> — apply specific commit to current branch"
+      ]}
+    ]},
+    { level:"L3", tag:"Git Workflows & Team Patterns", sections:[
+      { title:"GitFlow Strategy", items:[
+        "main — always production-ready, never commit directly",
+        "develop — integration branch, all features merge here",
+        "feature/* — one branch per feature, branch from develop",
+        "release/* — cut from develop when ready for release, merge to main + develop",
+        "hotfix/* — branch from main for urgent fixes, merge to main + develop",
+        "Good for: versioned products, scheduled releases",
+        "Downside: complex, slow for continuous deployment"
+      ]},
+      { title:"Trunk-Based Development", items:[
+        "Everyone commits to main (trunk) directly or via very short-lived branches (< 1 day)",
+        "Feature flags hide incomplete features in production",
+        "Requires: strong CI, fast tests, good team communication",
+        "Good for: high-velocity teams, SaaS continuous delivery (used by Google, Netflix)",
+        "Branch lifespan: hours to 1-2 days max",
+        "Works well with: feature flags, canary deployments"
+      ]},
+      { title:"GitHub Flow (most common for MERN teams)", items:[
+        "main is always deployable",
+        "For any change: create branch → commit → open PR → review → merge → deploy",
+        "Branch naming: feature/, bugfix/, hotfix/, chore/ prefixes",
+        "PR = Pull Request: code review before merge",
+        "Squash merge PRs to keep main history clean",
+        "Required status checks: tests must pass before merge",
+        "Branch protection rules on main — no direct push",
+        "Simple, fast, works for most teams"
+      ]},
+      { title:"Commit Message Best Practices", items:[
+        "Conventional Commits format: type(scope): description",
+        "Types: feat, fix, docs, style, refactor, test, chore, perf",
+        "Examples: feat(auth): add JWT refresh token rotation",
+        "Examples: fix(api): handle null user in profile endpoint",
+        "Examples: chore(deps): update express to 4.19.2",
+        "Subject line: max 72 chars, imperative mood ('add' not 'added')",
+        "Body: explain WHY not WHAT (code shows what, commit explains why)",
+        "Breaking change: BREAKING CHANGE: in footer or ! after type",
+        "Tools: commitlint, husky, commitizen — enforce standards in CI"
+      ]}
+    ]},
+    { level:"L4", tag:"Advanced Git", sections:[
+      { title:"History & Debugging", items:[
+        "git log --author='name' — filter by author",
+        "git log --since='2 weeks ago' — filter by date",
+        "git log -- src/api/users.js — commits touching specific file",
+        "git blame <file> — who changed each line and when",
+        "git bisect start → git bisect bad → git bisect good <hash> — binary search for bug-introducing commit",
+        "git reflog — history of HEAD movements (recover lost commits)",
+        "git show <hash> — show changes in specific commit",
+        "git shortlog -sn — contributor stats"
+      ]},
+      { title:"Rebasing & Cleanup", items:[
+        "git rebase -i HEAD~3 — interactive rebase last 3 commits",
+        "Squash: combine multiple commits into one (pick → squash)",
+        "Reword: change commit message",
+        "Drop: remove commit entirely",
+        "Fixup: squash + discard commit message",
+        "Reorder commits by reordering lines in interactive rebase",
+        "Always rebase locally before PR — squash WIP commits",
+        "Never rebase after push to shared branch"
+      ]},
+      { title:"Git in CI/CD", items:[
+        "git tag v1.0.0 — mark release version",
+        "git tag -a v1.0.0 -m 'Release 1.0.0' — annotated tag",
+        "git push origin --tags — push tags to remote",
+        "Semantic versioning: MAJOR.MINOR.PATCH",
+        "GitHub Actions triggers on push/PR to main",
+        "Protect main: require PR + passing CI before merge",
+        "Dependabot — auto PR for dependency updates",
+        "git hooks: pre-commit (lint), commit-msg (format), pre-push (tests)",
+        "husky + lint-staged — run checks before commit"
+      ]}
+    ]}
+  ]
+},
+
+typeorm: {
+  emoji:"🔶", color:['#e96b00','#fff'],
+  description: "Express + TypeORM + MySQL stack. Build production REST APIs with Express.js, model data using TypeORM decorators, and persist to MySQL. Covers auth, migrations, QueryBuilder, relations, testing, and deployment.",
+  tags:["Express.js","TypeORM","MySQL","TypeScript","Decorators","Migrations","REST API"],
+  levels:[
+    { level:"L1", tag:"Express Basics", sections:[
+      { title:"Setup", items:["npm init + install express + nodemon","First server: app.listen + app.get","nodemon.json / ts-node-dev config","Project folder structure: src/routes src/controllers","Environment: dotenv + process.env","TypeScript setup: tsconfig.json for Node"] },
+      { title:"Routing", items:["app.get / post / put / delete / patch","Route params: :id","Query strings: req.query","req.body + express.json() middleware","req.headers","res.json / res.send / res.status / res.redirect","express.Router() — split routes into files"] },
+      { title:"Middleware", items:["Middleware concept + next()","app.use() execution order","express.json() + express.urlencoded()","express.static for files","morgan request logger","Custom middleware: logger, timer"] }
+    ]},
+    { level:"L2", tag:"Express Intermediate", sections:[
+      { title:"Error Handling", items:["Error-handling middleware: 4 args (err,req,res,next)","Global error handler pattern","404 catch-all route","Async errors: express-async-errors package","next(error) pattern","Custom AppError class","HTTP status code mapping"] },
+      { title:"Security Middleware", items:["helmet: security headers","cors: allowed origins, methods, headers","express-rate-limit: windowMs + max","cookie-parser","express-session basics","bcrypt: hash + compare passwords","dotenv: never commit .env"] },
+      { title:"Validation & Upload", items:["joi or zod schema validation","express-validator: check() + validationResult()","Validation middleware pattern","multer: single + array file upload","diskStorage vs memoryStorage","File type + size validation","Serving uploaded files"] }
+    ]},
+    { level:"L3", tag:"Express Advanced", sections:[
+      { title:"Patterns", items:["Controller-Service-Repository layers","DTO pattern","async wrapper / catchAsync helper","API versioning: /api/v1/","Centralized request validation middleware","Response envelope: { success, data, message }","Error codes + error registry"] },
+      { title:"Auth Patterns", items:["JWT: sign + verify + decode","jsonwebtoken: access token + refresh token","httpOnly cookie vs Authorization header","Auth middleware: protect route","Role-based access: admin / user guard","Refresh token rotation","Logout: blacklist token with Redis"] },
+      { title:"Performance", items:["compression middleware","Response caching headers: Cache-Control, ETag","Keep-alive connections","Graceful shutdown: SIGTERM handler","cluster module basics","express-slow-down","Request timeout middleware","Pagination middleware"] }
+    ]},
+    { level:"L4", tag:"MySQL Basics", sections:[
+      { title:"Core SQL", items:["Installation + MySQL Workbench","CREATE DATABASE / USE / DROP DATABASE","Data types: INT BIGINT VARCHAR TEXT DATE DATETIME BOOLEAN DECIMAL FLOAT ENUM","CREATE TABLE + constraints","INSERT INTO","SELECT * / SELECT columns","WHERE + AND/OR/NOT","ORDER BY ASC/DESC","LIMIT + OFFSET","UPDATE SET","DELETE FROM"] },
+      { title:"Constraints & Keys", items:["PRIMARY KEY + AUTO_INCREMENT","FOREIGN KEY + REFERENCES","NOT NULL","UNIQUE","DEFAULT value","CHECK constraint","ON DELETE CASCADE / SET NULL","Composite primary key"] },
+      { title:"Queries", items:["LIKE + wildcards %","IN / NOT IN","BETWEEN","IS NULL / IS NOT NULL","DISTINCT","Aliases: AS","CASE WHEN THEN ELSE END","String functions: CONCAT LENGTH UPPER LOWER SUBSTRING","Date functions: NOW() CURDATE() DATE_FORMAT DATEDIFF"] }
+    ]},
+    { level:"L5", tag:"MySQL Intermediate", sections:[
+      { title:"Joins", items:["INNER JOIN","LEFT JOIN","RIGHT JOIN","FULL OUTER JOIN (emulated)","Self JOIN","Multi-table JOIN","JOIN with aliases","Join vs subquery performance"] },
+      { title:"Aggregation", items:["COUNT / SUM / AVG / MIN / MAX","GROUP BY","HAVING (filter after group)","GROUP_CONCAT","ROLLUP","Window functions: ROW_NUMBER RANK DENSE_RANK OVER (PARTITION BY ORDER BY)","LAG / LEAD"] },
+      { title:"Performance", items:["INDEX: CREATE INDEX","UNIQUE INDEX","Composite index — column order matters","EXPLAIN + EXPLAIN ANALYZE","Covering index","Slow query log","SHOW INDEX","DROP INDEX","Query plan reading: type ALL vs ref vs eq_ref","innodb_buffer_pool_size"] }
+    ]},
+    { level:"L6", tag:"MySQL Advanced", sections:[
+      { title:"Transactions", items:["START TRANSACTION / BEGIN","COMMIT / ROLLBACK","SAVEPOINT + ROLLBACK TO SAVEPOINT","ACID properties","Isolation levels: READ UNCOMMITTED READ COMMITTED REPEATABLE READ SERIALIZABLE","Deadlock detection","FOR UPDATE / LOCK IN SHARE MODE","Optimistic vs pessimistic locking"] },
+      { title:"Advanced", items:["Views: CREATE VIEW","Stored Procedures","Triggers: BEFORE/AFTER INSERT/UPDATE/DELETE","Events: CREATE EVENT","JSON column type + JSON functions","Full-text search: FULLTEXT index + MATCH AGAINST","Partitioning basics","Replication: master-slave concept","Backup: mysqldump + mysqlpump","LOAD DATA INFILE"] }
+    ]},
+    { level:"L7", tag:"TypeORM Basics", sections:[
+      { title:"Setup", items:["Install: typeorm reflect-metadata mysql2","tsconfig: experimentalDecorators + emitDecoratorMetadata","import 'reflect-metadata' at entry","DataSource: createConnection deprecated → new DataSource({})","DataSource options: type host port database username password","synchronize: true (dev only)","logging: true","entities array or glob pattern","AppDataSource.initialize()"] },
+      { title:"Entities", items:["@Entity() decorator","@PrimaryGeneratedColumn() / @PrimaryGeneratedColumn('uuid')","@Column({ type, nullable, default, unique, length })","@Column types: varchar int text boolean date decimal","@CreateDateColumn + @UpdateDateColumn","@DeleteDateColumn (soft delete)","@Index() on column or entity","@Unique(['col1','col2']) composite","Entity file naming convention"] },
+      { title:"Repository API", items:["AppDataSource.getRepository(Entity)","repo.find({ where, order, take, skip })","repo.findOne({ where })","repo.findOneByOrFail()","repo.save(entity) — insert or update","repo.insert(data)","repo.update(criteria, partialEntity)","repo.delete(criteria)","repo.count({ where })","repo.exists({ where })"] }
+    ]},
+    { level:"L8", tag:"TypeORM Relations", sections:[
+      { title:"Relation Decorators", items:["@OneToOne + @JoinColumn (owner side)","@OneToMany + @ManyToOne (inverse)","@ManyToMany + @JoinTable (owner side)","Bidirectional vs unidirectional","nullable relations","cascade: ['insert','update','remove']","onDelete: 'CASCADE' | 'SET NULL'","eager: true — auto-load relation","lazy relations (Promise return)"] },
+      { title:"Loading Relations", items:["find with relations: ['profile','posts']","Nested relations: relations: { posts: { comments: true } }","QueryBuilder leftJoinAndSelect","Avoid N+1: join once vs loop find","@RelationId — load FK without join","Multiple relation load in one query","Relation count without loading"] },
+      { title:"Self-Referencing & Special", items:["Self-referencing @ManyToOne (categories tree)","TreeEntity: @Tree('closure-table')","@TreeParent + @TreeChildren","getTreeRepository().findTrees()","Many-to-many with extra columns: junction entity pattern","Polymorphic relations workaround"] }
+    ]},
+    { level:"L9", tag:"QueryBuilder", sections:[
+      { title:"Select QueryBuilder", items:["repo.createQueryBuilder('alias')","  .select(['alias.col','alias.col2'])","  .from(Entity,'alias')","  .where('alias.id = :id', { id })","  .andWhere / .orWhere","  .leftJoinAndSelect('alias.rel','relAlias')","  .innerJoin without select","  .orderBy('alias.col','ASC')","  .take(10).skip(0)","  .getMany() / .getOne() / .getCount()","  .getManyAndCount() — pagination"] },
+      { title:"Mutating QueryBuilder", items:["  .update(Entity).set({ field }).where().execute()","  .delete().from(Entity).where().execute()","  .insert().into(Entity).values([]).execute()","  .returning('*') — PostgreSQL only","Bulk insert with insert().values([])","Upsert: save() handles insert/update","Execute vs getMany performance"] },
+      { title:"Advanced QB", items:["Subquery in where: .where('id IN (' + subQB.getQuery() + ')')","  .setParameters(subQB.getParameters())","Raw SQL fragment: Brackets helper","  .select('COUNT(*) as count')  getRawMany()","  .groupBy / .having","  .addSelect for aggregates","Escape column names with double quotes","Parameter binding: never string concat (SQL injection)"] }
+    ]},
+    { level:"L10", tag:"TypeORM Advanced", sections:[
+      { title:"Migrations", items:["Turn off synchronize in prod","typeorm migration:generate -d src/data-source.ts src/migrations/Name","typeorm migration:run -d src/data-source.ts","typeorm migration:revert","typeorm migration:show","typeorm migration:create src/migrations/ManualName","Migration class: up() + down()","Version control migrations — never edit run migrations","CI/CD: run migrations before start"] },
+      { title:"Subscribers & Listeners", items:["@BeforeInsert / @AfterInsert entity listeners","@BeforeUpdate / @AfterUpdate","@BeforeRemove / @AfterRemove","@AfterLoad — computed fields","@EventSubscriber class: implements EntitySubscriberInterface","listenTo() method","beforeInsert / afterUpdate hooks in subscriber","Use case: auto hash password, set slug, audit log"] },
+      { title:"Transactions & Patterns", items:["AppDataSource.transaction(async manager => {})","manager.save() inside transaction","Propagation with EntityManager passed down","Custom repository class extending Repository<Entity>","Repository injection pattern with TypeScript","Soft delete: repo.softDelete(id)","repo.restore(id)","withDeleted option in find","Caching: { cache: true } or { cache: 60000 }","Connection pooling: extra.connectionLimit"] }
+    ]},
+    { level:"L11", tag:"Full Stack Integration", sections:[
+      { title:"Project Architecture", items:["Folder: src/entities src/repositories src/services src/controllers src/routes src/middlewares src/dtos","index.ts: init DataSource then app.listen","Separate data-source.ts file","Dependency injection lite: pass repos to services","class-validator + class-transformer for DTOs","validateOrReject() in service layer","plainToInstance(Dto, req.body)","Global error handler with TypeORM errors"] },
+      { title:"Auth Implementation", items:["User entity: @Column({ select: false }) on password","@BeforeInsert hash password with bcrypt","Login: findOne({ where: {email} }) + compare","JWT access token 15m + refresh token 7d","Store refresh token in DB or Redis","Protect middleware: verify JWT + attach user","@ManyToMany for roles / permissions","Guard middleware checks role"] },
+      { title:"Production Patterns", items:["Pagination: take/skip + getManyAndCount","Search: QueryBuilder LIKE or FULLTEXT","Filters: dynamic where conditions","Sorting: dynamic orderBy from query params","DTO validation on every endpoint","Swagger/OpenAPI with @nestjs/swagger or swagger-jsdoc","Request ID header for tracing","Structured logging: winston or pino","Health check endpoint /health","Graceful shutdown: close DataSource on SIGTERM"] }
+    ]},
+    { level:"L12", tag:"Testing & Deploy", sections:[
+      { title:"Testing", items:["Jest + ts-jest config","Supertest for HTTP integration tests","Test DataSource with SQLite in-memory or MySQL test DB","beforeAll: init DataSource + run migrations","afterAll: destroy DataSource","afterEach: clean tables in order (FK aware)","Unit test service with mocked repo","Mock repo: { find: jest.fn(), save: jest.fn() }","Test JWT protected routes: get token first","Coverage: jest --coverage"] },
+      { title:"Docker & Deploy", items:["Dockerfile: node:20-alpine, copy, npm ci, build, CMD","docker-compose: app + mysql + redis services","MySQL environment: MYSQL_ROOT_PASSWORD MYSQL_DATABASE","Wait-for-it / healthcheck depends_on",".env vs docker-compose environment","Nginx reverse proxy to Node app","PM2 in container or as process manager","CI/CD: lint + test + build + migrate + deploy","Deploy to Railway / Render / EC2","SSL: certbot or load balancer termination"] }
+    ]}
+  ]
+},
+
+}; // end data
+
+/* ═══════════════════════ ENGINE ═══════════════════════ */
+const STORAGE_KEY = 'fullstack-mastery-v3';
+let currentTech = 'progress';
+
+function getState() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch{return{};} }
+function setState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function makeId(tech,li,si,ii){ return `${tech}|${li}|${si}|${ii}`; }
+
+function techTotals(tech){
+  if(tech==='roadmap'||tech==='progress') return {total:0,done:0};
+  const state=getState(); let total=0,done=0;
+  (data[tech]?.levels||[]).forEach((lvl,li)=>lvl.sections.forEach((sec,si)=>sec.items.forEach((_,ii)=>{total++;if(state[makeId(tech,li,si,ii)])done++;})));
+  return {total,done};
+}
+
+function updateGlobal(){
+  if(currentTech==='roadmap'){ document.getElementById('globalLabel').textContent='Visual roadmap — no progress tracking'; document.getElementById('globalBar').style.width='0%'; return; }
+  if(currentTech==='progress'){ document.getElementById('globalLabel').textContent='Your overall progress dashboard'; document.getElementById('globalBar').style.width='0%'; return; }
+  const c=data[currentTech]?.color||['#7c6af7'];
+  const {total,done}=techTotals(currentTech);
+  const pct=total?Math.round(done/total*100):0;
+  const bar=document.getElementById('globalBar');
+  bar.style.width=pct+'%';
+  bar.style.background=`linear-gradient(90deg,${c[0]},${c[0]}99)`;
+  document.getElementById('globalLabel').textContent=`${done} / ${total} topics done (${pct}%)`;
+}
+
+function diffClass(d){ return d==='easy'?'diff-easy':d==='medium'?'diff-medium':d==='hard'?'diff-hard':''; }
+
+function renderTech(tech){
+  const id='panel-'+tech;
+  if(document.getElementById(id)) return;
+  if(tech==='progress'){ renderProgress(); return; }
+  if(tech==='roadmap'){ renderRoadmap(); return; }
+
+  const d=data[tech]; if(!d) return;
+  const state=getState();
+  const c=d.color;
+
+  const panel=document.createElement('div');
+  panel.className='tab-panel'; panel.id=id;
+
+  // Tech description
+  const desc=document.createElement('div');
+  desc.className='tech-desc';
+  desc.innerHTML=`<div class="tech-desc-badge">${d.emoji}</div><div class="tech-desc-body"><h3 style="color:${c[0]}">${Object.keys(data).find(k=>data[k]===d)||tech}</h3><p>${d.description}</p><div class="tags">${(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>`;
+  panel.appendChild(desc);
+
+  const grid=document.createElement('div');
+  grid.className='grid'; panel.appendChild(grid);
+
+  (d.levels||[]).forEach((lvl,li)=>{
+    const allIds=lvl.sections.flatMap((s,si)=>s.items.map((_,ii)=>makeId(tech,li,si,ii)));
+    const doneCount=allIds.filter(id=>state[id]).length;
+    const pct=allIds.length?Math.round(doneCount/allIds.length*100):0;
+
+    const card=document.createElement('div');
+    card.className='level-card';
+
+    const hdr=document.createElement('div');
+    hdr.className='level-header';
+    const lt=document.createElement('span'); lt.className='level-title'; lt.style.color=c[0]; lt.textContent=`${lvl.level} — ${lvl.tag}`;
+    const lb=document.createElement('span'); lb.className='level-badge'; lb.textContent=`${doneCount}/${allIds.length}`; lb.dataset.lb=`${tech}-${li}`;
+    hdr.appendChild(lt); hdr.appendChild(lb); card.appendChild(hdr);
+
+    lvl.sections.forEach((sec,si)=>{
+      const sub=document.createElement('div'); sub.className='subsection';
+      const st=document.createElement('div'); st.className='subsection-title '+diffClass(sec.difficulty||'');
+      st.textContent=sec.title; sub.appendChild(st);
+      const ul=document.createElement('ul');
+
+      sec.items.forEach((item,ii)=>{
+        const eid=makeId(tech,li,si,ii);
+        const done=!!state[eid];
+        const liEl=document.createElement('li');
+        if(done) liEl.classList.add('done');
+        const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=done; cb.style.accentColor=c[0];
+        cb.addEventListener('change',()=>{
+          const s=getState();
+          if(cb.checked) s[eid]=true; else delete s[eid];
+          setState(s); liEl.classList.toggle('done',cb.checked);
+          updateCardStats(card,tech,li,lvl); updateGlobal();
+        });
+        const lbl=document.createElement('span'); lbl.textContent=item;
+        lbl.addEventListener('click',()=>cb.click());
+        liEl.appendChild(cb); liEl.appendChild(lbl); ul.appendChild(liEl);
+      });
+
+      sub.appendChild(ul); card.appendChild(sub);
+    });
+
+    const cpWrap=document.createElement('div'); cpWrap.className='card-progress';
+    const cpFill=document.createElement('div'); cpFill.className='card-progress-fill';
+    cpFill.style.width=pct+'%'; cpFill.style.background=`linear-gradient(90deg,${c[0]},${c[0]}77)`;
+    cpFill.dataset.cf=`${tech}-${li}`; cpWrap.appendChild(cpFill); card.appendChild(cpWrap);
+    grid.appendChild(card);
+  });
+
+  document.getElementById('panels').appendChild(panel);
+}
+
+function updateCardStats(card,tech,li,lvl){
+  const state=getState();
+  const allIds=lvl.sections.flatMap((s,si)=>s.items.map((_,ii)=>makeId(tech,li,si,ii)));
+  const doneCount=allIds.filter(id=>state[id]).length;
+  const pct=allIds.length?Math.round(doneCount/allIds.length*100):0;
+  const fill=card.querySelector(`[data-cf="${tech}-${li}"]`);
+  if(fill) fill.style.width=pct+'%';
+  const badge=card.querySelector(`[data-lb="${tech}-${li}"]`);
+  if(badge) badge.textContent=`${doneCount}/${allIds.length}`;
+}
+
+/* ═══════════════════════ ROADMAP ═══════════════════════ */
+function renderProgress(){
+  const id='panel-progress';
+  const existing=document.getElementById(id);
+  /* always re-render to show fresh counts */
+  if(existing) existing.remove();
+
+  const techs=[
+    {key:'js',         label:'JavaScript'},
+    {key:'react',      label:'React'},
+    {key:'node',       label:'Node.js'},
+    {key:'mysql',      label:'MySQL'},
+    {key:'mongo',      label:'MongoDB'},
+    {key:'aws',        label:'AWS'},
+    {key:'typescript', label:'TypeScript'},
+    {key:'git',        label:'Git'},
+    {key:'dsa',        label:'DSA'},
+    {key:'sysdesign',  label:'System Design'},
+    {key:'interviewq', label:'Interview Q'},
+    {key:'behavioral', label:'Behavioral / HR'},
+    {key:'typeorm',    label:'Express+TypeORM'},
+  ];
+
+  let grandTotal=0, grandDone=0;
+  const rows=techs.map(t=>{
+    const {total,done}=techTotals(t.key);
+    grandTotal+=total; grandDone+=done;
+    return {...t,total,done};
+  });
+
+  const grandPct=grandTotal?Math.round(grandDone/grandTotal*100):0;
+
+  /* stat helpers */
+  const mastered=rows.filter(r=>r.total>0&&r.done===r.total).length;
+  const started=rows.filter(r=>r.done>0&&r.done<r.total).length;
+  const untouched=rows.filter(r=>r.done===0).length;
+
+  const state=getState();
+  const cards=rows.map(r=>{
+    const pct=r.total?Math.round(r.done/r.total*100):0;
+    const col=(data[r.key]?.color||['#7c6af7'])[0];
+    const emoji=data[r.key]?.emoji||'📘';
+
+    /* per-level breakdown rows */
+    const levels=data[r.key]?.levels||[];
+    const levelRows=levels.map((lvl,li)=>{
+      let lt=0,ld=0;
+      lvl.sections.forEach((sec,si)=>sec.items.forEach((_,ii)=>{lt++;if(state[makeId(r.key,li,si,ii)])ld++;}));
+      const lp=lt?Math.round(ld/lt*100):0;
+      return `<div style="margin-bottom:0.35rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-bottom:2px">
+          <span>${lvl.level||lvl.tag||('Level '+(li+1))}</span>
+          <span style="color:${col};font-weight:700">${lp}%</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:999px;height:4px;overflow:hidden">
+          <div style="width:${lp}%;height:100%;background:${col};border-radius:999px;transition:width 0.4s"></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="pcard" style="border-color:${pct===100?col:'var(--border)'}">
+      <div class="pcard-top" onclick="switchTab('${r.key}')" style="cursor:pointer">
+        <span class="pcard-emoji">${emoji}</span>
+        <span class="pcard-name">${r.label}</span>
+        <span class="pcard-pct" style="color:${col}">${pct}%</span>
+      </div>
+      <div class="pcard-bar-wrap">
+        <div class="pcard-bar" style="width:${pct}%;background:${col}"></div>
+      </div>
+      <div class="pcard-count" style="margin-bottom:${levelRows?'0.6rem':'0'}">${r.done} / ${r.total} topics${pct===100?' ✅':''}</div>
+      ${levelRows ? `<div style="border-top:1px solid var(--border);padding-top:0.6rem">${levelRows}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const panel=document.createElement('div');
+  panel.className='tab-panel'; panel.id=id;
+  panel.innerHTML=`
+<div class="progress-wrap">
+  <div class="progress-hero">
+    <h2>📊 My Learning Progress</h2>
+    <p>Click any card to jump to that topic</p>
+  </div>
+
+  <div class="progress-overall">
+    <div class="big-pct">${grandPct}%</div>
+    <div class="big-bar-wrap"><div class="big-bar" style="width:${grandPct}%"></div></div>
+    <div class="big-label">${grandDone} of ${grandTotal} total topics completed across all sections</div>
+  </div>
+
+  <div class="progress-streaks">
+    <div class="streak-card">
+      <div class="s-num" style="color:#48bb78">${mastered}</div>
+      <div class="s-label">Sections mastered (100%)</div>
+    </div>
+    <div class="streak-card">
+      <div class="s-num" style="color:#f6ad55">${started}</div>
+      <div class="s-label">Sections in progress</div>
+    </div>
+    <div class="streak-card">
+      <div class="s-num" style="color:#fc8181">${untouched}</div>
+      <div class="s-label">Not started yet</div>
+    </div>
+    <div class="streak-card">
+      <div class="s-num" style="color:#7c6af7">${grandTotal}</div>
+      <div class="s-label">Total topics across all tabs</div>
+    </div>
+  </div>
+
+  <hr class="divider" style="margin:1.2rem auto">
+
+  <div class="progress-grid">${cards}</div>
+</div>`;
+
+  document.getElementById('panels').appendChild(panel);
+}
+
+function renderRoadmap(){
+  const id='panel-roadmap';
+  if(document.getElementById(id)) return;
+  const panel=document.createElement('div');
+  panel.className='tab-panel'; panel.id=id;
+
+  panel.innerHTML=`
+<div class="roadmap-wrap">
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <h2 style="font-size:1.3rem;margin-bottom:0.4rem">Full Stack Developer Roadmap</h2>
+    <p style="color:var(--muted);font-size:0.82rem">Recommended learning order with parallel DSA practice • 12-month plan</p>
+  </div>
+  <div class="roadmap-legend">
+    <span><span class="legend-dot" style="background:#7c6af7"></span>Foundation</span>
+    <span><span class="legend-dot" style="background:#61dafb"></span>Frontend</span>
+    <span><span class="legend-dot" style="background:#68a063"></span>Backend</span>
+    <span><span class="legend-dot" style="background:#ff9900"></span>Cloud</span>
+    <span><span class="legend-dot" style="background:#e64a19"></span>DSA (run parallel)</span>
+    <span><span class="legend-dot" style="background:#e91e8c"></span>Interview Prep</span>
+  </div>
+
+  <!-- STAGE 0 -->
+  <div class="roadmap-section">
+    <h3>Stage 0 — Prerequisites</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#7c6af7">
+        <span class="stage-badge" style="background:#7c6af7">BEFORE START</span>
+        <h4>Computer Fundamentals</h4>
+        <ul><li>How internet works (HTTP, DNS, TCP/IP)</li><li>Browser dev tools</li><li>Command line basics</li><li>File system navigation</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#7c6af7">
+        <h4>HTML & CSS</h4>
+        <ul><li>Semantic HTML5</li><li>CSS box model, flexbox, grid</li><li>Responsive design basics</li><li>Forms + accessibility</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#7c6af7">
+        <h4>Git & GitHub</h4>
+        <ul><li>init, add, commit, push, pull</li><li>Branches + merge + rebase</li><li>Pull requests + code review</li><li>README + .gitignore</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 1 -->
+  <div class="roadmap-section">
+    <h3>Stage 1 — JavaScript Core (Month 1–2)</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#f7df1e">
+        <span class="stage-badge" style="background:#f7df1e;color:#000">MONTH 1</span>
+        <h4 style="color:#f7df1e">JS Basics → Core</h4>
+        <ul><li>Variables, types, operators</li><li>Functions, scope, closures</li><li>Arrays + Objects deep dive</li><li>Loops + control flow</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#f7df1e">
+        <h4 style="color:#f7df1e">JS Intermediate</h4>
+        <ul><li>Prototypes + Classes</li><li>this, call/apply/bind</li><li>Error handling</li><li>Execution context + hoisting</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#f7df1e">
+        <span class="stage-badge" style="background:#f7df1e;color:#000">MONTH 2</span>
+        <h4 style="color:#f7df1e">Async JS + Browser</h4>
+        <ul><li>Event loop + Promises</li><li>Async/Await</li><li>DOM + Events + Fetch</li><li>Modules + Tooling (Vite)</li></ul>
+      </div>
+    </div>
+    <div class="roadmap-parallel">
+      <div class="roadmap-node" style="border-color:#e64a19;margin-top:0">
+        <span class="stage-badge" style="background:#e64a19">DSA PARALLEL</span>
+        <h4 style="color:#e64a19">Arrays Easy + Strings Easy</h4>
+        <ul><li>Two Sum, Contains Duplicate</li><li>Valid Palindrome, Anagram</li><li>First non-repeating char</li><li>Basic sliding window</li></ul>
+        <span class="roadmap-month">Target: 15–20 easy problems</span>
+      </div>
+      <div class="roadmap-node" style="border-color:#e91e8c;margin-top:0">
+        <span class="stage-badge" style="background:#e91e8c">MINI PROJECT</span>
+        <h4 style="color:#e91e8c">Build: JS Todo App</h4>
+        <ul><li>Vanilla JS (no frameworks)</li><li>CRUD with localStorage</li><li>DOM manipulation practice</li><li>Async: fetch + display data</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 2 -->
+  <div class="roadmap-section">
+    <h3>Stage 2 — React Frontend (Month 3–4)</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#61dafb">
+        <span class="stage-badge" style="background:#61dafb;color:#000">MONTH 3</span>
+        <h4 style="color:#61dafb">React Basics</h4>
+        <ul><li>JSX + Components + Props</li><li>useState + useEffect</li><li>Lists, keys, forms</li><li>React DevTools</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#61dafb">
+        <h4 style="color:#61dafb">Intermediate React</h4>
+        <ul><li>useRef, useMemo, useCallback</li><li>Context API</li><li>React Router v6</li><li>TanStack Query</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#61dafb">
+        <span class="stage-badge" style="background:#61dafb;color:#000">MONTH 4</span>
+        <h4 style="color:#61dafb">Advanced React</h4>
+        <ul><li>Redux Toolkit</li><li>React Hook Form + Zod</li><li>Performance: memo + lazy</li><li>Testing with RTL</li></ul>
+      </div>
+    </div>
+    <div class="roadmap-parallel">
+      <div class="roadmap-node" style="border-color:#e64a19;margin-top:0">
+        <span class="stage-badge" style="background:#e64a19">DSA PARALLEL</span>
+        <h4 style="color:#e64a19">Arrays Medium + Hash Maps Easy</h4>
+        <ul><li>Kadane, 3Sum, Product Except Self</li><li>LRU Cache concept</li><li>Sliding window patterns</li><li>Two pointer patterns</li></ul>
+        <span class="roadmap-month">Target: 25–30 medium problems</span>
+      </div>
+      <div class="roadmap-node" style="border-color:#e91e8c;margin-top:0">
+        <span class="stage-badge" style="background:#e91e8c">MINI PROJECT</span>
+        <h4 style="color:#e91e8c">Build: React E-commerce UI</h4>
+        <ul><li>Product listing + cart</li><li>Redux for cart state</li><li>React Router pages</li><li>API integration (FakeStore API)</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 3 -->
+  <div class="roadmap-section">
+    <h3>Stage 3 — Node.js Backend (Month 4–5)</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#68a063">
+        <span class="stage-badge" style="background:#68a063">MONTH 4–5</span>
+        <h4 style="color:#68a063">Node + Express</h4>
+        <ul><li>Node core modules + fs + streams</li><li>Express routing + middleware</li><li>REST API: CRUD endpoints</li><li>JWT authentication</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#68a063">
+        <h4 style="color:#68a063">API Patterns</h4>
+        <ul><li>Error handling middleware</li><li>Validation with Zod/Joi</li><li>File uploads (multer)</li><li>Rate limiting + security headers</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#68a063">
+        <h4 style="color:#68a063">Testing + Deploy</h4>
+        <ul><li>Jest + Supertest</li><li>Docker basics</li><li>PM2 + Nginx</li><li>Environment management</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 4 -->
+  <div class="roadmap-section">
+    <h3>Stage 4 — Databases (Month 5–6)</h3>
+    <div class="roadmap-parallel">
+      <div class="roadmap-node" style="border-color:#00758f">
+        <span class="stage-badge" style="background:#00758f">MONTH 5</span>
+        <h4 style="color:#00758f">MySQL</h4>
+        <ul><li>DDL + DML + DQL</li><li>Joins (all types)</li><li>Aggregation + Window functions</li><li>Indexes + EXPLAIN + Transactions</li><li>Normalization (1NF→3NF)</li></ul>
+      </div>
+      <div class="roadmap-node" style="border-color:#13aa52">
+        <span class="stage-badge" style="background:#13aa52">MONTH 6</span>
+        <h4 style="color:#13aa52">MongoDB + Mongoose</h4>
+        <ul><li>CRUD + Query operators</li><li>Aggregation pipeline</li><li>Schema design patterns</li><li>Indexes + Mongoose ODM</li><li>Transactions + Change Streams</li></ul>
+      </div>
+    </div>
+    <div class="roadmap-parallel" style="margin-top:0.75rem">
+      <div class="roadmap-node" style="border-color:#e64a19">
+        <span class="stage-badge" style="background:#e64a19">DSA PARALLEL</span>
+        <h4 style="color:#e64a19">Linked Lists + Trees Easy/Medium</h4>
+        <ul><li>Reverse LL, Floyd's cycle detection</li><li>BST traversals, LCA</li><li>Level order BFS</li><li>Merge K sorted lists</li></ul>
+        <span class="roadmap-month">Target: 30+ problems total so far</span>
+      </div>
+      <div class="roadmap-node" style="border-color:#e91e8c">
+        <span class="stage-badge" style="background:#e91e8c">CAPSTONE PROJECT</span>
+        <h4 style="color:#e91e8c">Build: Full-Stack App</h4>
+        <ul><li>React frontend + Node backend</li><li>MySQL or MongoDB</li><li>Auth (JWT + refresh tokens)</li><li>Docker + Nginx + Cloud deploy</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 5 -->
+  <div class="roadmap-section">
+    <h3>Stage 5 — AWS Cloud (Month 7–8)</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#ff9900">
+        <span class="stage-badge" style="background:#ff9900;color:#000">MONTH 7</span>
+        <h4 style="color:#ff9900">AWS Core</h4>
+        <ul><li>IAM + EC2 + S3</li><li>VPC + Security Groups</li><li>RDS + ElastiCache</li><li>Route 53 + CloudFront</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#ff9900">
+        <h4 style="color:#ff9900">AWS Compute + Serverless</h4>
+        <ul><li>Lambda + API Gateway</li><li>ECS + Fargate</li><li>SQS + SNS</li><li>CloudWatch monitoring</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#ff9900">
+        <span class="stage-badge" style="background:#ff9900;color:#000">MONTH 8</span>
+        <h4 style="color:#ff9900">DevOps + IaC</h4>
+        <ul><li>CloudFormation / CDK</li><li>CodePipeline CI/CD</li><li>Security: KMS, Secrets</li><li>Cost optimization</li></ul>
+      </div>
+    </div>
+    <div class="roadmap-parallel">
+      <div class="roadmap-node" style="border-color:#e64a19;margin-top:0">
+        <span class="stage-badge" style="background:#e64a19">DSA PARALLEL</span>
+        <h4 style="color:#e64a19">Graphs + DP Easy/Medium</h4>
+        <ul><li>BFS/DFS patterns</li><li>Topological sort</li><li>Coin change, LIS, Knapsack</li><li>Grid DP problems</li></ul>
+        <span class="roadmap-month">Target: 75+ problems total</span>
+      </div>
+      <div class="roadmap-node" style="border-color:#7c6af7;margin-top:0">
+        <span class="stage-badge" style="background:#7c6af7">SYSTEM DESIGN</span>
+        <h4 style="color:#7c6af7">Start System Design</h4>
+        <ul><li>Fundamentals: caching, LB, CDN</li><li>CAP theorem + scaling</li><li>URL Shortener design</li><li>Rate limiter design</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 6 -->
+  <div class="roadmap-section">
+    <h3>Stage 6 — Advanced & Interview Ready (Month 9–12)</h3>
+    <div class="roadmap-track">
+      <div class="roadmap-node" style="border-color:#7c6af7">
+        <span class="stage-badge" style="background:#7c6af7">MONTH 9–10</span>
+        <h4 style="color:#7c6af7">TypeScript + Next.js</h4>
+        <ul><li>TS: types, interfaces, generics</li><li>Next.js App Router</li><li>Server/Client components</li><li>Full-stack with Next.js</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node" style="border-color:#7c6af7">
+        <h4 style="color:#7c6af7">System Design Deep</h4>
+        <ul><li>Twitter, Uber, Chat app</li><li>Netflix, Google Drive</li><li>Consistent hashing, Kafka</li><li>Mock interviews</li></ul>
+      </div>
+      <div class="roadmap-arrow">→</div>
+      <div class="roadmap-node done-node">
+        <span class="stage-badge" style="background:var(--done)">MONTH 11–12</span>
+        <h4 style="color:var(--done)">🚀 Job Ready</h4>
+        <ul><li>150+ LeetCode solved</li><li>Portfolio: 3 projects</li><li>Interview Q all techs</li><li>Mock interviews × 10</li></ul>
+      </div>
+    </div>
+    <div class="roadmap-parallel">
+      <div class="roadmap-node" style="border-color:#e64a19;margin-top:0">
+        <span class="stage-badge" style="background:#e64a19">DSA GOAL</span>
+        <h4 style="color:#e64a19">Complete 150+ LeetCode</h4>
+        <ul><li>Arrays: 30 | Strings: 20</li><li>Hash Map: 15 | LL: 15</li><li>Trees: 20 | Graphs: 20</li><li>DP: 20 | Others: 30</li></ul>
+        <span class="roadmap-month">NeetCode 150 or Blind 75 + extras</span>
+      </div>
+      <div class="roadmap-node" style="border-color:#e91e8c;margin-top:0">
+        <span class="stage-badge" style="background:#e91e8c">PORTFOLIO</span>
+        <h4 style="color:#e91e8c">3 Projects Minimum</h4>
+        <ul><li>Full-stack CRUD app (React+Node+DB)</li><li>Real-time feature (Socket.io / WebSocket)</li><li>AWS-deployed project (Lambda + RDS + S3)</li><li>GitHub: clean README + live demo</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS TABLE -->
+  <hr class="divider">
+  <div style="max-width:900px;margin:0 auto">
+    <h3 style="text-align:center;margin-bottom:1rem;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">Skills by Experience Level</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.75rem">
+      <div class="roadmap-node" style="border-color:#48bb78">
+        <span class="stage-badge" style="background:#48bb78">JUNIOR (0–2 yrs)</span>
+        <ul><li>JavaScript L1–L5 solid</li><li>React basics + hooks</li><li>Node + Express REST API</li><li>MySQL or MongoDB basics</li><li>Git workflow</li><li>Deploy to Heroku/Railway</li><li>50+ LeetCode easy/medium</li></ul>
+      </div>
+      <div class="roadmap-node" style="border-color:#f6ad55">
+        <span class="stage-badge" style="background:#f6ad55;color:#000">MID (2–5 yrs)</span>
+        <ul><li>JS advanced (generators, proxy)</li><li>React performance + testing</li><li>Node microservices pattern</li><li>Both SQL + NoSQL proficient</li><li>AWS core services</li><li>Docker + CI/CD</li><li>100+ LeetCode + system design basics</li></ul>
+      </div>
+      <div class="roadmap-node" style="border-color:#fc8181">
+        <span class="stage-badge" style="background:#fc8181">SENIOR (5+ yrs)</span>
+        <ul><li>Architecture decisions + tradeoffs</li><li>Performance optimization expertise</li><li>System design (large scale)</li><li>Team mentoring + code review</li><li>AWS advanced (EKS, CDK)</li><li>TypeScript expert</li><li>150+ LeetCode + design classics</li></ul>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  document.getElementById('panels').appendChild(panel);
+}
+
+function switchTab(tech){
+  currentTech=tech;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tech===tech));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  renderTech(tech);
+  const panel=document.getElementById('panel-'+tech);
+  if(panel) panel.classList.add('active');
+  updateGlobal();
+}
+
+function resetCurrent(){
+  if(!confirm(`Reset all ${currentTech.toUpperCase()} progress?`)) return;
+  const s=getState();
+  Object.keys(s).forEach(k=>{ if(k.startsWith(currentTech+'|')) delete s[k]; });
+  setState(s);
+  const panel=document.getElementById('panel-'+currentTech);
+  if(panel) panel.remove();
+  switchTab(currentTech);
+}
+
+function resetAll(){
+  if(!confirm('Reset ALL progress for all technologies?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  document.querySelectorAll('.tab-panel').forEach(p=>p.remove());
+  switchTab(currentTech);
+}
+
+switchTab('progress');
+</script>
+</body>
+</html>
