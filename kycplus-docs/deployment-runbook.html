@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYCPlus Deployment & Maintenance Runbook</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; font-size: 13px; line-height: 1.7; }
+.topbar { background: #161b22; border-bottom: 1px solid #21262d; padding: 12px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topbar a { color: #58a6ff; text-decoration: none; font-size: 12px; }
+.topbar a:hover { text-decoration: underline; }
+.topbar-title { color: #f0f6fc; font-weight: 700; font-size: 15px; }
+.container { max-width: 980px; margin: 0 auto; padding: 24px 20px; }
+.page-title { font-size: 22px; font-weight: 800; color: #f0f6fc; margin-bottom: 4px; }
+.page-sub { color: #8b949e; font-size: 13px; margin-bottom: 20px; }
+.search-bar { width: 100%; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 9px 14px; color: #e6edf3; font-size: 13px; margin-bottom: 16px; outline: none; }
+.search-bar:focus { border-color: #58a6ff; }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0; }
+.tab { padding: 7px 13px; border-radius: 6px 6px 0 0; border: 1px solid #30363d; border-bottom: none; cursor: pointer; font-size: 12px; font-weight: 600; background: #161b22; color: #8b949e; transition: all 0.15s; white-space: nowrap; }
+.tab:hover { background: #1c2128; color: #e6edf3; }
+.tab.active { background: #21262d; color: #58a6ff; border-color: #58a6ff; }
+.tab-content { display: none; background: #0d1117; border: 1px solid #30363d; border-radius: 0 6px 6px 6px; padding: 22px 20px; }
+.tab-content.active { display: block; }
+.concept-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+.concept-card h3 { color: #79c0ff; font-size: 13px; margin-bottom: 6px; }
+.concept-card p { color: #c9d1d9; font-size: 12px; line-height: 1.6; }
+.step { display: flex; gap: 12px; margin-bottom: 16px; }
+.step-num { min-width: 28px; height: 28px; background: #1f6feb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; margin-top: 3px; }
+.step-body { flex: 1; }
+.step-body strong { color: #f0f6fc; font-size: 13px; display: block; margin-bottom: 4px; }
+.step-body p { color: #8b949e; font-size: 12px; margin-bottom: 6px; }
+pre { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 11px 14px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 12px; color: #e6edf3; margin: 6px 0 12px 0; position: relative; }
+.copy-btn { position: absolute; top: 7px; right: 8px; background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; font-family: sans-serif; }
+.copy-btn:hover { background: #30363d; color: #e6edf3; }
+.c { color: #8b949e; }
+.h { color: #ffa657; }
+.g { color: #3fb950; }
+.note { background: #0d2a0d; border-left: 3px solid #3fb950; border-radius: 0 4px 4px 0; padding: 8px 12px; font-size: 12px; color: #3fb950; margin: 8px 0; }
+.warn { background: #2a1f0d; border-left: 3px solid #d29922; border-radius: 0 4px 4px 0; padding: 8px 12px; font-size: 12px; color: #d29922; margin: 8px 0; }
+.info { background: #0d1a2a; border-left: 3px solid #58a6ff; border-radius: 0 4px 4px 0; padding: 8px 12px; font-size: 12px; color: #79c0ff; margin: 8px 0; }
+.danger { background: #2a0d0d; border-left: 3px solid #f85149; border-radius: 0 4px 4px 0; padding: 8px 12px; font-size: 12px; color: #f85149; margin: 8px 0; }
+.sec-title { font-size: 14px; font-weight: 700; color: #f0f6fc; margin: 20px 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #21262d; }
+code { background: #21262d; padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #a5d6ff; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.table-wrap { overflow-x: auto; margin: 8px 0 14px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #161b22; color: #8b949e; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; padding: 7px 10px; border: 1px solid #30363d; text-align: left; }
+td { padding: 6px 10px; border: 1px solid #30363d; vertical-align: top; }
+tr:nth-child(even) td { background: #0d1117; }
+tr:nth-child(odd) td { background: #161b22; }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.bg { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
+.bb { background: #1a2a3a; color: #58a6ff; border: 1px solid #58a6ff; }
+.bo { background: #3a2a1a; color: #ffa657; border: 1px solid #ffa657; }
+.analogy { background: #1a1a2a; border: 1px solid #3a3a6a; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+.analogy .label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #7a7aaa; margin-bottom: 4px; }
+.analogy p { color: #c9d1d9; font-size: 12px; }
+.footer { text-align: center; padding: 28px; border-top: 1px solid #21262d; color: #484f58; font-size: 12px; margin-top: 16px; }
+.footer a { color: #58a6ff; text-decoration: none; }
+@media(max-width:640px){ .grid2 { grid-template-columns: 1fr; } .tab { font-size: 11px; padding: 5px 8px; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← Back to Docs</a>
+  <span style="color:#30363d">|</span>
+  <span class="topbar-title">📘 Deployment & Maintenance Runbook</span>
+</div>
+
+<div class="container">
+  <div class="page-title">Deployment & Maintenance Runbook</div>
+  <p class="page-sub">Complete operations guide for KYCPlus — beginner friendly. Covers Docker, logs, .env updates, nginx, SSL, MySQL, and troubleshooting.</p>
+
+  <input class="search-bar" id="search" placeholder="🔍 Search commands, topics, errors..." oninput="filterSearch(this.value)" />
+
+  <div class="tabs" id="tab-bar">
+    <div class="tab active" onclick="showTab('concepts',this)">🧠 Concepts</div>
+    <div class="tab" onclick="showTab('ssh',this)">🔐 SSH</div>
+    <div class="tab" onclick="showTab('containers',this)">🐳 Containers</div>
+    <div class="tab" onclick="showTab('logs',this)">📋 Logs</div>
+    <div class="tab" onclick="showTab('envbackend',this)">⚙️ Backend .env</div>
+    <div class="tab" onclick="showTab('envfrontend',this)">🖼️ Frontend .env</div>
+    <div class="tab" onclick="showTab('deploy',this)">🚀 Deploy</div>
+    <div class="tab" onclick="showTab('nginx',this)">🌐 Nginx</div>
+    <div class="tab" onclick="showTab('ssl',this)">🔒 SSL</div>
+    <div class="tab" onclick="showTab('disk',this)">💾 Disk</div>
+    <div class="tab" onclick="showTab('mysql',this)">🗄️ MySQL</div>
+    <div class="tab" onclick="showTab('health',this)">✅ Health Check</div>
+    <div class="tab" onclick="showTab('troubleshoot',this)">🔧 Troubleshoot</div>
+  </div>
+
+  <!-- CONCEPTS -->
+  <div class="tab-content active" id="tab-concepts">
+    <div class="sec-title">Docker & Server Concepts for Beginners</div>
+    <div class="concept-card"><h3>🐳 What is Docker?</h3><p>Docker packages your app + all its dependencies into a <strong>container</strong> — a sealed, isolated environment. It runs the same way on any server. You don't install Node.js or Python directly on the server — Docker handles everything inside the container.</p></div>
+    <div class="analogy"><div class="label">Analogy</div><p>Docker container = shipping container. App inside is isolated. The EC2 server is the ship carrying multiple containers.</p></div>
+    <div class="concept-card"><h3>📦 Image vs Container</h3><p><strong>Image</strong> = the blueprint (built from Dockerfile). <strong>Container</strong> = the running instance of that image. You build an image once, run it as a container. To update code: rebuild the image, restart the container.</p></div>
+    <div class="concept-card"><h3>📄 docker-compose.yml</h3><p>A config file that defines how to run a container — which port to expose, which .env to use, container name, restart policy. Run <code>docker compose up -d</code> in the same folder to start everything defined in it.</p></div>
+    <div class="concept-card"><h3>🔌 Ports — HOST:CONTAINER</h3><p>Format: <code>HOST_PORT:CONTAINER_PORT</code>. Example: <code>4001:4001</code> means traffic hitting the server's port 4001 goes into the container's port 4001. Nginx listens on 80/443 and routes to internal container ports.</p></div>
+    <div class="analogy"><div class="label">Analogy</div><p>Ports = office building doors. Nginx is the receptionist at the front door (80/443) who directs visitors to the right room (container port).</p></div>
+    <div class="concept-card"><h3>🌐 Nginx Reverse Proxy</h3><p>Nginx sits in front of all containers. When someone visits <code>demo.kycplus.in</code>, nginx receives it on port 443 (HTTPS) and forwards to the right container: frontend on 3002, backend on 4001, face API on 8000.</p></div>
+    <div class="concept-card"><h3>⚠️ Why Frontend Needs Rebuild After .env Change</h3><p><strong>Backend</strong> reads .env at runtime (when container starts) → restart is enough.<br><strong>Frontend (React/Vite)</strong> bakes VITE_ variables into the JavaScript bundle at BUILD time. Changing .env after build has zero effect. You MUST rebuild the Docker image.</p></div>
+    <div class="sec-title">File Structure on EC2 Server</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button>/home/ubuntu/Demo/kycplus_backend2/   <span class="c"># Demo backend</span>
+/home/ubuntu/QA/kycplus_backend2/     <span class="c"># QA backend</span>
+/home/ubuntu/face-ai/                 <span class="c"># Face AI (shared)</span>
+/var/www/Demo/kycplus_frontend/       <span class="c"># Demo frontend</span>
+/var/www/Demo/kycplus_rekyc/          <span class="c"># Demo ReKYC frontend</span>
+/var/www/QA/kycplus_frontend/         <span class="c"># QA frontend</span>
+/var/www/QA/kycplus_rekyc/            <span class="c"># QA ReKYC frontend</span>
+/etc/nginx/sites-available/           <span class="c"># Nginx configs (one per domain)</span></pre>
+  </div>
+
+  <!-- SSH -->
+  <div class="tab-content" id="tab-ssh">
+    <div class="sec-title">Connect to the EC2 Server</div>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>SSH from your local machine</strong><p>Open terminal or PowerShell. Use the .pem key from AWS.</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button>ssh -i "your-key.pem" ubuntu@&lt;server-public-ip&gt;</pre></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Fix key permissions (Mac/Linux only)</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button>chmod 400 your-key.pem</pre></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Become root (for most commands)</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">sudo -i      <span class="c"># switch to root</span>
+exit         <span class="c"># go back to ubuntu user</span></pre></div></div>
+    <div class="sec-title">Navigate Files</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button>pwd              <span class="c"># show current folder</span>
+ls -la           <span class="c"># list files with details</span>
+cd /path/folder  <span class="c"># go to folder</span>
+cd ..            <span class="c"># go up one level</span>
+cat filename     <span class="c"># print file contents</span>
+nano filename    <span class="c"># edit file — Ctrl+O save, Ctrl+X exit</span></pre>
+  </div>
+
+  <!-- CONTAINERS -->
+  <div class="tab-content" id="tab-containers">
+    <div class="sec-title">Check Status</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}"
+docker ps -a   <span class="c"># includes stopped containers</span></pre>
+    <div class="info">Status: <strong>Up (healthy)</strong> = running fine. <strong>Up (unhealthy)</strong> = running, health check failing. <strong>Exited</strong> = stopped/crashed.</div>
+    <div class="sec-title">Start / Stop / Restart</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker restart kycplus_backend        <span class="c"># Demo backend</span>
+docker restart kycplus_backend_qa     <span class="c"># QA backend</span>
+docker restart kycplus_frontend_demo  <span class="c"># Demo frontend</span>
+docker restart kycplus_frontend_qa    <span class="c"># QA frontend</span>
+docker stop &lt;name&gt;
+docker start &lt;name&gt;</pre>
+    <div class="sec-title">Start via docker compose (preferred)</div>
+    <div class="warn">Always <code>cd</code> into the correct folder first — docker compose uses the docker-compose.yml in that folder.</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Demo Backend</span>
+cd /home/ubuntu/Demo/kycplus_backend2 && docker compose up -d
+
+<span class="c"># QA Backend</span>
+cd /home/ubuntu/QA/kycplus_backend2 && docker compose up -d
+
+<span class="c"># Demo Frontend</span>
+cd /var/www/Demo/kycplus_frontend && docker compose up -d
+
+<span class="c"># QA Frontend</span>
+cd /var/www/QA/kycplus_frontend && docker compose up -d
+
+<span class="c"># Demo ReKYC (needs --env-file)</span>
+cd /var/www/Demo/kycplus_rekyc && docker compose --env-file .env up -d
+
+<span class="c"># QA ReKYC</span>
+cd /var/www/QA/kycplus_rekyc && docker compose --env-file .env up -d
+
+<span class="c"># Face AI</span>
+cd /home/ubuntu/face-ai && docker compose up -d</pre>
+    <div class="sec-title">Run Command Inside Container</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker exec -it kycplus_backend sh   <span class="c"># open shell inside container</span>
+docker exec kycplus_backend env      <span class="c"># print env variables in container</span>
+exit                                  <span class="c"># leave container shell</span></pre>
+    <div class="sec-title">Cleanup Old Data</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker container prune -f   <span class="c"># remove stopped containers</span>
+docker image prune -f       <span class="c"># remove unused images</span>
+docker system prune -f      <span class="c"># remove all unused resources</span>
+docker system df            <span class="c"># check how much space Docker uses</span></pre>
+  </div>
+
+  <!-- LOGS -->
+  <div class="tab-content" id="tab-logs">
+    <div class="info">Logs = #1 debugging tool. Always check logs first when something breaks.</div>
+    <div class="sec-title">Container Logs</div>
+    <div class="grid2">
+      <div>
+        <p style="color:#ffa657;font-size:12px;font-weight:600;margin-bottom:6px">Demo</p>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker logs -f kycplus_backend
+docker logs -f kycplus_frontend_demo
+docker logs -f kyc-rekyc-frontend-demo</pre>
+      </div>
+      <div>
+        <p style="color:#3fb950;font-size:12px;font-weight:600;margin-bottom:6px">QA</p>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker logs -f kycplus_backend_qa
+docker logs -f kycplus_frontend_qa
+docker logs -f kyc-rekyc-frontend</pre>
+      </div>
+    </div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker logs -f face-ai-face-api-1      <span class="c"># Face AI</span>
+docker logs --tail 100 kycplus_backend  <span class="c"># last 100 lines only</span>
+docker logs --since 1h kycplus_backend  <span class="c"># last 1 hour</span>
+docker logs -t kycplus_backend          <span class="c"># with timestamps</span>
+<span class="c"># Press Ctrl+C to stop following</span></pre>
+    <div class="sec-title">Nginx Logs</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">tail -f /var/log/nginx/access.log              <span class="c"># live traffic</span>
+tail -f /var/log/nginx/error.log               <span class="c"># live errors</span>
+grep "demo.kycplus.in" /var/log/nginx/access.log | tail -50
+grep " 50[0-9] " /var/log/nginx/access.log | tail -20  <span class="c"># 5xx errors only</span></pre>
+    <div class="sec-title">What Log Messages Mean</div>
+    <div class="table-wrap"><table>
+      <tr><th>Message</th><th>Meaning</th><th>Action</th></tr>
+      <tr><td><code>Server running on port 4001</code></td><td>Backend started OK</td><td>Good ✓</td></tr>
+      <tr><td><code>Cannot connect to database</code></td><td>DB credentials wrong or MySQL down</td><td>Check .env DB_* values</td></tr>
+      <tr><td><code>EADDRINUSE :4001</code></td><td>Port 4001 already used</td><td>Kill conflicting process</td></tr>
+      <tr><td><code>MODULE_NOT_FOUND</code></td><td>npm package missing</td><td>Rebuild Docker image</td></tr>
+      <tr><td><code>502 Bad Gateway</code></td><td>Container down or wrong nginx port</td><td>Check docker ps + nginx config</td></tr>
+    </table></div>
+  </div>
+
+  <!-- BACKEND ENV -->
+  <div class="tab-content" id="tab-envbackend">
+    <div class="note">✅ Backend .env change = restart only. No image rebuild needed.</div>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Edit the .env file</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /home/ubuntu/Demo/kycplus_backend2/.env   <span class="c"># Demo</span>
+nano /home/ubuntu/QA/kycplus_backend2/.env     <span class="c"># QA</span></pre>
+    <p>nano: <code>Ctrl+O</code> = save &nbsp;|&nbsp; <code>Enter</code> = confirm &nbsp;|&nbsp; <code>Ctrl+X</code> = exit</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Restart container to apply</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/Demo/kycplus_backend2
+docker compose down && docker compose up -d
+
+cd /home/ubuntu/QA/kycplus_backend2
+docker compose down && docker compose up -d</pre></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Confirm started OK</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker logs -f kycplus_backend   <span class="c"># look for "Server running on port..."</span></pre></div></div>
+    <div class="warn">If PORT changed in .env: also update nginx <code>proxy_pass</code> port and run <code>nginx -t && systemctl reload nginx</code>.</div>
+    <div class="sec-title">Backend .env Variables</div>
+    <pre>PORT=4001                      <span class="c"># which port to listen on</span>
+NODE_ENV=production
+DB_HOST=host.docker.internal   <span class="c"># MySQL on the EC2 server itself</span>
+DB_PORT=3306
+DB_NAME=kycdb
+DB_USER=kycuser
+DB_PASS=yourpassword
+JWT_SECRET=your_jwt_secret
+AWS_REGION=ap-south-1</pre>
+  </div>
+
+  <!-- FRONTEND ENV -->
+  <div class="tab-content" id="tab-envfrontend">
+    <div class="warn">⚠ VITE_ variables bake into the JavaScript bundle at BUILD time. Changing .env = must rebuild Docker image.</div>
+    <div class="sec-title">Demo Frontend</div>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Edit .env</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /var/www/Demo/kycplus_frontend/.env</pre></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Rebuild and start</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /var/www/Demo/kycplus_frontend
+docker compose down
+docker compose --env-file .env build --no-cache
+docker compose up -d
+docker logs -f kycplus_frontend_demo</pre></div></div>
+    <div class="sec-title">QA Frontend</div>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Edit .env</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /var/www/QA/kycplus_frontend/.env</pre></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Rebuild (QA uses direct docker build)</strong>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /var/www/QA/kycplus_frontend
+source .env
+
+docker build \
+  --build-arg VITE_API_URL=$VITE_API_URL \
+  --build-arg VITE_API=$VITE_API \
+  --build-arg VITE_ASSET_URL=$VITE_ASSET_URL \
+  --build-arg VITE_ENV=$VITE_ENV \
+  --build-arg VITE_FACE_API_URL=$VITE_FACE_API_URL \
+  --build-arg VITE_CLIENT_SESSION_STORAGE_KEY=$VITE_CLIENT_SESSION_STORAGE_KEY \
+  --build-arg VITE_CLIENT_AUTH_STORAGE_KEY=$VITE_CLIENT_AUTH_STORAGE_KEY \
+  -t kycplus_frontend_qa:latest .
+
+docker stop kycplus_frontend_qa && docker rm kycplus_frontend_qa
+docker run -d --name kycplus_frontend_qa -p 3000:80 --restart unless-stopped kycplus_frontend_qa:latest</pre></div></div>
+    <div class="sec-title">Demo ReKYC</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /var/www/Demo/kycplus_rekyc/.env
+cd /var/www/Demo/kycplus_rekyc
+docker compose --env-file .env down
+docker compose --env-file .env build --no-cache
+docker compose --env-file .env up -d</pre>
+    <div class="sec-title">Frontend .env Variables</div>
+    <pre>VITE_API_URL=https://demo.kycplus.in/api   <span class="c"># must include /api</span>
+VITE_API=https://demo.kycplus.in/api
+VITE_ASSET_URL=https://demo.kycplus.in
+VITE_ENV=PROD
+VITE_FACE_API_URL=https://dev.kycplus.in/face
+VITE_CLIENT_SESSION_STORAGE_KEY=session_data
+VITE_CLIENT_AUTH_STORAGE_KEY=accessToken
+PORT=3002                                    <span class="c"># host port (not VITE_ — used by compose)</span></pre>
+  </div>
+
+  <!-- DEPLOY -->
+  <div class="tab-content" id="tab-deploy">
+    <div class="info">Use this when a developer pushes new code and the server needs to be updated.</div>
+    <div class="sec-title">Demo Backend</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/Demo/kycplus_backend2
+git pull origin &lt;branch-name&gt;
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+docker logs -f kycplus_backend</pre>
+    <div class="sec-title">QA Backend</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/QA/kycplus_backend2
+git pull origin &lt;branch-name&gt;
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+docker logs -f kycplus_backend_qa</pre>
+    <div class="sec-title">Demo Frontend</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /var/www/Demo/kycplus_frontend
+git pull origin &lt;branch-name&gt;
+docker compose down
+docker compose --env-file .env build --no-cache
+docker compose up -d
+docker logs -f kycplus_frontend_demo</pre>
+    <div class="sec-title">Git Troubleshooting</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">git branch                             <span class="c"># see current branch</span>
+git status                             <span class="c"># what changed locally</span>
+git log --oneline -5                   <span class="c"># last 5 commits</span>
+
+<span class="c"># If pull fails with "diverged" error</span>
+git pull --no-rebase origin &lt;branch&gt;
+
+<span class="c"># If local changes block pull</span>
+git stash && git pull origin &lt;branch&gt; && git stash pop</pre>
+    <div class="danger">⛔ <code>git reset --hard origin/&lt;branch&gt;</code> destroys ALL uncommitted local changes. Use only if certain.</div>
+  </div>
+
+  <!-- NGINX -->
+  <div class="tab-content" id="tab-nginx">
+    <div class="info">Nginx routes domain traffic to containers. Must always be running.</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">systemctl status nginx          <span class="c"># check if running</span>
+nginx -t                        <span class="c"># test config for errors (ALWAYS before reload)</span>
+systemctl reload nginx          <span class="c"># apply config changes — no downtime</span>
+systemctl restart nginx         <span class="c"># full restart</span></pre>
+    <div class="sec-title">Edit Config</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /etc/nginx/sites-available/demo.kycplus.in.conf
+nano /etc/nginx/sites-available/qa.kycplus.in.conf
+nano /etc/nginx/sites-available/demorekyc.kycplus.in.conf
+nano /etc/nginx/sites-available/qarekyc.kycplus.in.conf
+
+<span class="c"># After editing — always test then reload</span>
+nginx -t && systemctl reload nginx</pre>
+    <div class="sec-title">Nginx Config Template</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">server {
+    server_name demo.kycplus.in;
+
+    <span class="c"># SSL cert challenge — DO NOT proxy this to container</span>
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    <span class="c"># API → backend container</span>
+    location /api/ {
+        proxy_pass http://localhost:4001/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    <span class="c"># Face API</span>
+    location /face/ {
+        proxy_pass http://localhost:8000/;
+        proxy_set_header Host $host;
+        proxy_read_timeout 120s;
+    }
+
+    <span class="c"># Frontend (everything else)</span>
+    location / {
+        proxy_pass http://localhost:3002;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    listen 443 ssl;
+    <span class="c"># SSL lines auto-added by certbot — do not edit manually</span>
+}</pre>
+    <div class="sec-title">Add New Domain</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># 1. Create config (copy template above, change server_name + ports)</span>
+nano /etc/nginx/sites-available/newdomain.kycplus.in.conf
+
+<span class="c"># 2. Enable it</span>
+ln -s /etc/nginx/sites-available/newdomain.kycplus.in.conf /etc/nginx/sites-enabled/
+
+<span class="c"># 3. Test and reload</span>
+nginx -t && systemctl reload nginx
+
+<span class="c"># 4. Get SSL certificate</span>
+certbot --nginx -d newdomain.kycplus.in</pre>
+  </div>
+
+  <!-- SSL -->
+  <div class="tab-content" id="tab-ssl">
+    <div class="info">Certbot manages Let's Encrypt SSL (HTTPS). Certs expire every 90 days — certbot auto-renews them via cron.</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">certbot certificates             <span class="c"># list all certs + expiry dates</span>
+certbot --nginx -d domain.kycplus.in   <span class="c"># issue new cert</span>
+certbot renew --dry-run          <span class="c"># test renewal</span>
+certbot renew                    <span class="c"># force renew all</span></pre>
+    <div class="warn">Before issuing: domain DNS must point to this server's IP. Nginx must serve domain on port 80.</div>
+    <div class="note">Nginx config must have <code>location /.well-known/acme-challenge/ { root /var/www/html; }</code> — NOT proxied to container.</div>
+  </div>
+
+  <!-- DISK -->
+  <div class="tab-content" id="tab-disk">
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">df -h                    <span class="c"># total disk usage</span>
+docker system df         <span class="c"># Docker disk usage breakdown</span>
+du -sh /var/lib/docker   <span class="c"># how much docker data takes</span>
+free -h                  <span class="c"># RAM usage</span>
+docker stats --no-stream <span class="c"># CPU/RAM per container</span></pre>
+    <div class="sec-title">Free Up Space</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker container prune -f     <span class="c"># remove stopped containers</span>
+docker image prune -a -f      <span class="c"># remove unused images</span>
+docker volume prune -f        <span class="c"># remove unused volumes</span>
+docker system prune -f        <span class="c"># all-in-one cleanup</span></pre>
+  </div>
+
+  <!-- MYSQL -->
+  <div class="tab-content" id="tab-mysql">
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">mysql -u root -p            <span class="c"># connect as root</span>
+mysql -u kycuser -p kycdb  <span class="c"># connect as app user</span></pre>
+    <div class="sec-title">MySQL Shell Commands</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">SHOW DATABASES;
+USE kycdb;
+SHOW TABLES;
+SELECT * FROM users LIMIT 10;
+exit</pre>
+    <div class="sec-title">Create User (MySQL 8.4+)</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c">-- For Docker containers (use % for any host)</span>
+CREATE USER 'username'@'%' IDENTIFIED BY 'strongpassword';
+GRANT ALL PRIVILEGES ON kycdb.* TO 'username'@'%';
+FLUSH PRIVILEGES;</pre>
+    <div class="note">MySQL 8.4+ removed <code>mysql_native_password</code> by default. Use <code>IDENTIFIED BY 'pass'</code> without specifying plugin.</div>
+    <div class="sec-title">Backup & Restore</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">mkdir -p /home/ubuntu/backups
+
+<span class="c"># Backup</span>
+mysqldump -u root -p kycdb > /home/ubuntu/backups/kycdb_$(date +%Y%m%d_%H%M).sql
+
+<span class="c"># Restore</span>
+mysql -u root -p kycdb < /home/ubuntu/backups/kycdb_20250601_1200.sql
+
+systemctl status mysql
+systemctl restart mysql</pre>
+  </div>
+
+  <!-- HEALTH CHECK -->
+  <div class="tab-content" id="tab-health">
+    <div class="note">Run this single command to check everything at once.</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">echo "=== CONTAINERS ===" && \
+docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}" && \
+echo "" && echo "=== NGINX ===" && \
+nginx -t 2>&1 && systemctl is-active nginx && \
+echo "" && echo "=== DISK ===" && df -h / && \
+echo "" && echo "=== MEMORY ===" && free -h && \
+echo "" && echo "=== PORTS ===" && \
+ss -tlnp | grep -E '3000|3002|4000|4001|8000|8086|8087|80|443'</pre>
+    <div class="sec-title">Test Each Endpoint</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">curl -s http://localhost:4000/health    <span class="c"># QA backend</span>
+curl -s http://localhost:4001/health    <span class="c"># Demo backend</span>
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000  <span class="c"># QA frontend</span>
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3002  <span class="c"># Demo frontend</span>
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8086  <span class="c"># QA ReKYC</span>
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8087  <span class="c"># Demo ReKYC</span></pre>
+    <div class="sec-title">After Server Reboot</div>
+    <div class="note">Containers with <code>restart: unless-stopped</code> auto-start. If not, run:</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/Demo/kycplus_backend2 && docker compose up -d
+cd /home/ubuntu/QA/kycplus_backend2 && docker compose up -d
+cd /var/www/Demo/kycplus_frontend && docker compose up -d
+cd /var/www/QA/kycplus_frontend && docker compose up -d
+cd /var/www/Demo/kycplus_rekyc && docker compose --env-file .env up -d
+cd /var/www/QA/kycplus_rekyc && docker compose --env-file .env up -d
+cd /home/ubuntu/face-ai && docker compose up -d
+systemctl start nginx</pre>
+  </div>
+
+  <!-- TROUBLESHOOT -->
+  <div class="tab-content" id="tab-troubleshoot">
+    <div class="concept-card"><h3>❌ 502 Bad Gateway</h3><p>Container not running OR nginx proxy_pass port is wrong.</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps                  <span class="c"># is container running?</span>
+cat /etc/nginx/sites-available/demo.kycplus.in.conf  <span class="c"># verify proxy_pass port</span>
+nginx -t && systemctl reload nginx</pre></div>
+    <div class="concept-card"><h3>❌ API URL wrong / missing /api</h3><p>VITE_API or VITE_API_URL in frontend .env missing <code>/api</code> suffix, OR was changed after build without rebuild.</p>
+    <p>Fix: edit .env, ensure value ends with <code>/api</code>, then <strong>rebuild</strong> the frontend image.</p></div>
+    <div class="concept-card"><h3>❌ Port already in use</h3>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">ss -tlnp | grep 4001       <span class="c"># find what uses port 4001</span>
+kill -9 &lt;PID&gt;</pre></div>
+    <div class="concept-card"><h3>❌ git pull fails — diverged</h3>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">git pull --no-rebase origin &lt;branch&gt;</pre></div>
+    <div class="concept-card"><h3>❌ Container unhealthy but site works</h3><p>False alarm — healthcheck using <code>localhost</code> but container binds to <code>0.0.0.0</code>. Check actual healthcheck output:</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker inspect --format='{{json .State.Health}}' &lt;container&gt; | python3 -m json.tool</pre></div>
+    <div class="concept-card"><h3>❌ WARN: variable "E4tFv" not set</h3><p>Special characters in .env values breaking shell parsing.</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># BAD</span>
+PASSWORD=P@ss!word#123
+
+<span class="c"># GOOD — quote values with special chars</span>
+PASSWORD="P@ss!word#123"</pre></div>
+    <div class="concept-card"><h3>❌ npm ci fails — lock file mismatch</h3><p>package.json updated but package-lock.json not regenerated.</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># On local machine</span>
+npm install
+git add package-lock.json
+git commit -m "fix: update lockfile"
+git push</pre></div>
+    <div class="concept-card"><h3>❌ Certbot ACME challenge fails (401/403)</h3><p>Nginx is proxying <code>/.well-known/acme-challenge/</code> to container. Add this BEFORE <code>location /</code>:</p>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">location /.well-known/acme-challenge/ {
+    root /var/www/html;
+}
+nginx -t && systemctl reload nginx
+certbot --nginx -d yourdomain.kycplus.in</pre></div>
+    <div class="concept-card"><h3>❌ Disk full</h3>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button">df -h
+docker system prune -a -f</pre></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  KYCPlus DevOps Docs · <a href="index.html">← Back to Index</a> · <a href="https://github.com/ketkilonare">github.com/ketkilonare</a>
+</div>
+
+<script>
+function showTab(name, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function cp(btn) {
+  const pre = btn.parentElement;
+  const text = pre.innerText.replace(/^Copy\n?/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.style.color = '#3fb950';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 1500);
+  });
+}
+
+function filterSearch(val) {
+  const q = val.toLowerCase();
+  if (!q) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.removeProperty('display'));
+    return;
+  }
+  let firstMatch = null;
+  document.querySelectorAll('.tab-content').forEach(t => {
+    if (t.textContent.toLowerCase().includes(q)) {
+      t.style.display = 'block';
+      t.classList.add('active');
+      if (!firstMatch) firstMatch = t.id.replace('tab-', '');
+    } else {
+      t.style.display = 'none';
+      t.classList.remove('active');
+    }
+  });
+  if (firstMatch) {
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.remove('active');
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + firstMatch + "'")) t.classList.add('active');
+    });
+  }
+}
+</script>
+</body>
+</html>
