@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYCPlus DevOps Docs</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+.hero { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border-bottom: 1px solid #21262d; padding: 48px 32px 40px; text-align: center; }
+.hero h1 { font-size: 32px; font-weight: 800; color: #f0f6fc; margin-bottom: 8px; }
+.hero h1 span { color: #58a6ff; }
+.hero p { color: #8b949e; font-size: 15px; max-width: 520px; margin: 0 auto 24px; }
+.badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.b-green { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
+.b-blue { background: #1a2a3a; color: #58a6ff; border: 1px solid #58a6ff; }
+.b-orange { background: #3a2a1a; color: #ffa657; border: 1px solid #ffa657; }
+.container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+.section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8b949e; margin-bottom: 16px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s; display: block; }
+.card:hover { border-color: #58a6ff; transform: translateY(-2px); }
+.card-icon { font-size: 28px; margin-bottom: 10px; }
+.card h3 { font-size: 15px; font-weight: 700; color: #f0f6fc; margin-bottom: 6px; }
+.card p { font-size: 12px; color: #8b949e; line-height: 1.6; }
+.card-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.tag { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+.port-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 40px; }
+.port-table th { background: #161b22; color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border: 1px solid #30363d; text-align: left; }
+.port-table td { padding: 8px 12px; border: 1px solid #30363d; }
+.port-table tr:nth-child(even) td { background: #0d1117; }
+.port-table tr:nth-child(odd) td { background: #161b22; }
+.port-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; font-family: monospace; background: #1a2a3a; color: #58a6ff; border: 1px solid #30363d; }
+.footer { text-align: center; padding: 32px; border-top: 1px solid #21262d; color: #484f58; font-size: 12px; }
+.footer a { color: #58a6ff; text-decoration: none; }
+.updated { display: inline-block; background: #21262d; padding: 4px 10px; border-radius: 4px; font-size: 11px; color: #8b949e; margin-top: 8px; }
+@media(max-width:600px){ .hero h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>KYCPlus <span>DevOps Docs</span></h1>
+  <p>Deployment, maintenance, and operations reference for the KYCPlus platform on AWS EC2.</p>
+  <div class="badge-row">
+    <span class="badge b-green">QA Environment</span>
+    <span class="badge b-orange">Demo Environment</span>
+    <span class="badge b-blue">Ubuntu 22.04 · Docker · Nginx</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">📚 Documentation</div>
+  <div class="cards">
+    <a class="card" href="deployment-runbook.html">
+      <div class="card-icon">🚀</div>
+      <h3>Deployment & Maintenance Runbook</h3>
+      <p>Complete step-by-step guide for deploying, updating, and maintaining all environments. Includes Docker concepts for beginners, logs, .env changes, nginx, SSL, and troubleshooting.</p>
+      <div class="card-tags">
+        <span class="tag">Docker</span>
+        <span class="tag">Nginx</span>
+        <span class="tag">SSL</span>
+        <span class="tag">Logs</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">Beginner Friendly</span>
+      </div>
+    </a>
+
+    <a class="card" href="port-registry.html">
+      <div class="card-icon">🗺️</div>
+      <h3>Port Registry & Architecture</h3>
+      <p>Quick reference for all container ports, domains, folder paths, and nginx routing. Use this when setting up a new environment or debugging routing issues.</p>
+      <div class="card-tags">
+        <span class="tag">Ports</span>
+        <span class="tag">Domains</span>
+        <span class="tag">Architecture</span>
+        <span class="tag">Nginx Config</span>
+      </div>
+    </a>
+
+    <a class="card" href="deployment-runbook.html#tab-troubleshoot">
+      <div class="card-icon">🔧</div>
+      <h3>Troubleshooting Guide</h3>
+      <p>Common errors and their exact fixes — 502 Bad Gateway, wrong API URLs, port conflicts, git diverged branches, certbot failures, disk full, and more.</p>
+      <div class="card-tags">
+        <span class="tag">Errors</span>
+        <span class="tag">Fixes</span>
+        <span class="tag">Debugging</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-title">⚡ Quick Port Reference</div>
+  <table class="port-table">
+    <tr>
+      <th>Container</th>
+      <th>Port</th>
+      <th>Domain</th>
+      <th>Type</th>
+      <th>Env</th>
+      <th>Folder</th>
+    </tr>
+    <tr>
+      <td>kycplus_backend_qa</td>
+      <td><span class="port-badge">4000</span></td>
+      <td>qa.kycplus.in/api/</td>
+      <td>Node Backend</td>
+      <td><span class="badge b-green" style="font-size:10px">QA</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/home/ubuntu/QA/kycplus_backend2</code></td>
+    </tr>
+    <tr>
+      <td>kycplus_backend</td>
+      <td><span class="port-badge">4001</span></td>
+      <td>demo.kycplus.in/api/</td>
+      <td>Node Backend</td>
+      <td><span class="badge b-orange" style="font-size:10px">Demo</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/home/ubuntu/Demo/kycplus_backend2</code></td>
+    </tr>
+    <tr>
+      <td>kycplus_frontend_qa</td>
+      <td><span class="port-badge">3000</span></td>
+      <td>qa.kycplus.in</td>
+      <td>React Frontend</td>
+      <td><span class="badge b-green" style="font-size:10px">QA</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/var/www/QA/kycplus_frontend</code></td>
+    </tr>
+    <tr>
+      <td>kycplus_frontend_demo</td>
+      <td><span class="port-badge">3002</span></td>
+      <td>demo.kycplus.in</td>
+      <td>React Frontend</td>
+      <td><span class="badge b-orange" style="font-size:10px">Demo</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/var/www/Demo/kycplus_frontend</code></td>
+    </tr>
+    <tr>
+      <td>kyc-rekyc-frontend</td>
+      <td><span class="port-badge">8086</span></td>
+      <td>qarekyc.kycplus.in</td>
+      <td>ReKYC Frontend</td>
+      <td><span class="badge b-green" style="font-size:10px">QA</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/var/www/QA/kycplus_rekyc</code></td>
+    </tr>
+    <tr>
+      <td>kyc-rekyc-frontend-demo</td>
+      <td><span class="port-badge">8087</span></td>
+      <td>demorekyc.kycplus.in</td>
+      <td>ReKYC Frontend</td>
+      <td><span class="badge b-orange" style="font-size:10px">Demo</span></td>
+      <td><code style="font-size:11px;color:#8b949e">/var/www/Demo/kycplus_rekyc</code></td>
+    </tr>
+    <tr>
+      <td>face-ai-face-api-1</td>
+      <td><span class="port-badge">8000</span></td>
+      <td>/face/ (shared)</td>
+      <td>Face AI (Python)</td>
+      <td>Both</td>
+      <td><code style="font-size:11px;color:#8b949e">/home/ubuntu/face-ai</code></td>
+    </tr>
+  </table>
+
+  <div class="section-title">🔑 Key Rules to Remember</div>
+  <div class="cards">
+    <div class="card" style="border-color:#d29922;cursor:default">
+      <div class="card-icon">⚙️</div>
+      <h3>Backend .env Change</h3>
+      <p>Only needs <strong style="color:#3fb950">container restart</strong>. No rebuild.<br><br><code style="font-size:11px;background:#21262d;padding:2px 6px;border-radius:3px">docker compose down && docker compose up -d</code></p>
+    </div>
+    <div class="card" style="border-color:#f85149;cursor:default">
+      <div class="card-icon">🖼️</div>
+      <h3>Frontend .env Change</h3>
+      <p>VITE_ variables bake at build time. Requires <strong style="color:#f85149">full image rebuild</strong>.<br><br><code style="font-size:11px;background:#21262d;padding:2px 6px;border-radius:3px">docker compose build --no-cache</code></p>
+    </div>
+    <div class="card" style="border-color:#58a6ff;cursor:default">
+      <div class="card-icon">🌐</div>
+      <h3>Nginx Config Change</h3>
+      <p>Always test before reload. Zero downtime reload available.<br><br><code style="font-size:11px;background:#21262d;padding:2px 6px;border-radius:3px">nginx -t && systemctl reload nginx</code></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  KYCPlus DevOps Documentation · <a href="https://github.com/ketkilonare">github.com/ketkilonare</a>
+  <br><span class="updated">Last updated: June 2025</span>
+</div>
+
+</body>
+</html>
