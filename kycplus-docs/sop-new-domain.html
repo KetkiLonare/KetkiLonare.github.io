@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP — Deploy Any App on New Domain (Docker + Nginx + SSL)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; font-size: 13px; line-height: 1.7; }
+.topbar { background: #161b22; border-bottom: 1px solid #21262d; padding: 12px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topbar a { color: #58a6ff; text-decoration: none; font-size: 12px; }
+.topbar a:hover { text-decoration: underline; }
+.topbar-title { color: #f0f6fc; font-weight: 700; font-size: 15px; }
+.hero { background: #161b22; border-bottom: 1px solid #21262d; padding: 36px 24px 32px; text-align: center; }
+.hero h1 { font-size: 26px; font-weight: 800; color: #f0f6fc; margin-bottom: 8px; }
+.hero h1 span { color: #58a6ff; }
+.hero p { color: #8b949e; font-size: 13px; max-width: 560px; margin: 0 auto 20px; }
+.pill-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.p-blue { background: #1a2a3a; color: #58a6ff; border: 1px solid #30363d; }
+.p-green { background: #1a3a1a; color: #3fb950; border: 1px solid #30363d; }
+.p-purple { background: #2a1a3a; color: #bc8cff; border: 1px solid #30363d; }
+.container { max-width: 860px; margin: 0 auto; padding: 32px 20px 40px; }
+
+/* Phase nav */
+.phase-nav { display: flex; gap: 0; margin-bottom: 32px; border-radius: 8px; overflow: hidden; border: 1px solid #30363d; }
+.phase-item { flex: 1; padding: 10px 6px; text-align: center; background: #161b22; cursor: pointer; border-right: 1px solid #30363d; transition: background 0.15s; }
+.phase-item:last-child { border-right: none; }
+.phase-item:hover { background: #1c2128; }
+.phase-item.active { background: #1f6feb; }
+.phase-item .num { font-size: 10px; color: #8b949e; margin-bottom: 2px; }
+.phase-item.active .num { color: #cce5ff; }
+.phase-item .label { font-size: 11px; font-weight: 700; color: #c9d1d9; }
+.phase-item.active .label { color: #fff; }
+
+/* Phase content */
+.phase-content { display: none; }
+.phase-content.active { display: block; }
+
+/* Steps */
+.step-group { margin-bottom: 28px; }
+.step-group-title { font-size: 14px; font-weight: 700; color: #f0f6fc; background: #161b22; border-left: 3px solid #58a6ff; padding: 7px 12px; border-radius: 0 4px 4px 0; margin-bottom: 14px; }
+.step { display: flex; gap: 14px; margin-bottom: 18px; }
+.step-num { min-width: 30px; height: 30px; background: #1f6feb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; margin-top: 2px; }
+.step-num.done { background: #238636; }
+.step-num.warn { background: #9e6a03; }
+.step-body { flex: 1; }
+.step-body strong { color: #f0f6fc; font-size: 13px; display: block; margin-bottom: 4px; }
+.step-body p { color: #8b949e; font-size: 12px; margin-bottom: 6px; }
+
+/* Code */
+pre { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 12px; color: #e6edf3; margin: 6px 0 10px 0; position: relative; }
+.copy-btn { position: absolute; top: 7px; right: 8px; background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+.copy-btn:hover { background: #30363d; color: #e6edf3; }
+.c { color: #8b949e; }
+.h { color: #ffa657; }
+.g { color: #3fb950; }
+.k { color: #ff7b72; }
+.s { color: #a5d6ff; }
+code { background: #21262d; padding: 1px 5px; border-radius: 4px; font-size: 11px; color: #a5d6ff; font-family: monospace; }
+
+/* Alerts */
+.note { background: #0d2a0d; border-left: 3px solid #3fb950; border-radius: 0 4px 4px 0; padding: 9px 12px; font-size: 12px; color: #3fb950; margin: 8px 0; }
+.warn { background: #2a1f0d; border-left: 3px solid #d29922; border-radius: 0 4px 4px 0; padding: 9px 12px; font-size: 12px; color: #d29922; margin: 8px 0; }
+.info { background: #0d1a2a; border-left: 3px solid #58a6ff; border-radius: 0 4px 4px 0; padding: 9px 12px; font-size: 12px; color: #79c0ff; margin: 8px 0; }
+.danger { background: #2a0d0d; border-left: 3px solid #f85149; border-radius: 0 4px 4px 0; padding: 9px 12px; font-size: 12px; color: #f85149; margin: 8px 0; }
+
+/* Checklist */
+.checklist { list-style: none; margin: 8px 0 14px 0; }
+.checklist li { padding: 5px 0 5px 24px; position: relative; font-size: 12px; color: #c9d1d9; border-bottom: 1px solid #21262d; }
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before { content: '☐'; position: absolute; left: 0; color: #58a6ff; font-size: 14px; top: 4px; }
+
+/* Variable table */
+.var-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0 14px; }
+.var-table th { background: #161b22; color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 7px 10px; border: 1px solid #30363d; text-align: left; }
+.var-table td { padding: 6px 10px; border: 1px solid #30363d; vertical-align: top; }
+.var-table tr:nth-child(even) td { background: #0d1117; }
+.var-table tr:nth-child(odd) td { background: #161b22; }
+.var-table td:first-child { font-family: monospace; color: #a5d6ff; }
+.var-table td:last-child { color: #8b949e; font-size: 11px; }
+
+/* Summary box */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.summary-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px; text-align: center; }
+.summary-card .icon { font-size: 24px; margin-bottom: 6px; }
+.summary-card .title { font-size: 12px; font-weight: 700; color: #f0f6fc; margin-bottom: 4px; }
+.summary-card .sub { font-size: 11px; color: #8b949e; }
+
+/* Fill-in form */
+.fill-box { background: #161b22; border: 1px solid #58a6ff; border-radius: 8px; padding: 16px 18px; margin-bottom: 20px; }
+.fill-box h3 { color: #58a6ff; font-size: 13px; margin-bottom: 12px; }
+.fill-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.fill-label { color: #c9d1d9; font-size: 12px; min-width: 160px; }
+.fill-input { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 5px 10px; color: #e6edf3; font-size: 12px; font-family: monospace; flex: 1; min-width: 180px; outline: none; }
+.fill-input:focus { border-color: #58a6ff; }
+.fill-btn { background: #1f6feb; border: none; color: #fff; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
+.fill-btn:hover { background: #388bfd; }
+
+.footer { text-align: center; padding: 28px; border-top: 1px solid #21262d; color: #484f58; font-size: 12px; margin-top: 20px; }
+.footer a { color: #58a6ff; text-decoration: none; }
+@media(max-width:600px){ .phase-nav { flex-wrap: wrap; } .phase-item { min-width: 30%; border-radius: 4px; border: 1px solid #30363d; margin: 2px; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← Back to Docs</a>
+  <span style="color:#30363d">|</span>
+  <span class="topbar-title">📋 SOP — Deploy Any App on New Domain</span>
+</div>
+
+<div class="hero">
+  <h1>Deploy <span>Any App</span> on a New Domain</h1>
+  <p>Standard Operating Procedure. Follow phases in order. Works for any Node.js backend, React frontend, or Python API using Docker + Nginx + SSL on Ubuntu EC2.</p>
+  <div class="pill-row">
+    <span class="pill p-blue">Docker</span>
+    <span class="pill p-blue">Nginx</span>
+    <span class="pill p-green">Let's Encrypt SSL</span>
+    <span class="pill p-purple">Ubuntu 22.04</span>
+    <span class="pill p-blue">AWS EC2</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Fill-in form -->
+  <div class="fill-box">
+    <h3>📝 Fill in your deployment details — commands below auto-update</h3>
+    <div class="fill-row">
+      <span class="fill-label">Domain name</span>
+      <input class="fill-input" id="f-domain" placeholder="newapp.kycplus.in" oninput="updateAll()" />
+    </div>
+    <div class="fill-row">
+      <span class="fill-label">Backend port</span>
+      <input class="fill-input" id="f-bport" placeholder="4002" oninput="updateAll()" />
+    </div>
+    <div class="fill-row">
+      <span class="fill-label">Frontend port</span>
+      <input class="fill-input" id="f-fport" placeholder="3003" oninput="updateAll()" />
+    </div>
+    <div class="fill-row">
+      <span class="fill-label">App name (lowercase, no spaces)</span>
+      <input class="fill-input" id="f-name" placeholder="newapp" oninput="updateAll()" />
+    </div>
+    <div class="fill-row">
+      <span class="fill-label">Environment</span>
+      <input class="fill-input" id="f-env" placeholder="staging" oninput="updateAll()" />
+    </div>
+  </div>
+
+  <!-- Phase navigation -->
+  <div class="phase-nav">
+    <div class="phase-item active" onclick="showPhase(0,this)"><div class="num">PHASE 1</div><div class="label">📋 Pre-checks</div></div>
+    <div class="phase-item" onclick="showPhase(1,this)"><div class="num">PHASE 2</div><div class="label">📁 Folder Setup</div></div>
+    <div class="phase-item" onclick="showPhase(2,this)"><div class="num">PHASE 3</div><div class="label">⚙️ .env Files</div></div>
+    <div class="phase-item" onclick="showPhase(3,this)"><div class="num">PHASE 4</div><div class="label">🐳 Docker Build</div></div>
+    <div class="phase-item" onclick="showPhase(4,this)"><div class="num">PHASE 5</div><div class="label">🌐 Nginx Config</div></div>
+    <div class="phase-item" onclick="showPhase(5,this)"><div class="num">PHASE 6</div><div class="label">🔒 SSL Cert</div></div>
+    <div class="phase-item" onclick="showPhase(6,this)"><div class="num">PHASE 7</div><div class="label">✅ Verify</div></div>
+  </div>
+
+  <!-- PHASE 1: Pre-checks -->
+  <div class="phase-content active" id="phase-0">
+    <div class="step-group">
+      <div class="step-group-title">Before you start — verify these</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>DNS A record points to this server</strong>
+        <p>Go to your domain registrar / Route53. Add an A record: <code class="dyn-domain">newapp.kycplus.in</code> → <code>server-public-ip</code>. Wait for propagation (usually 1–5 min for Route53).</p>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button><span class="c"># Verify DNS resolves to correct IP</span>
+nslookup <span class="dyn-domain">newapp.kycplus.in</span>
+<span class="c"># OR</span>
+dig <span class="dyn-domain">newapp.kycplus.in</span> +short</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Pick ports not already in use</strong>
+        <p>Each app on the server needs unique host ports. Check what's taken:</p>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">ss -tlnp | grep -E 'LISTEN'
+docker ps --format "table {{.Names}}\t{{.Ports}}"</pre>
+        <div class="info">Current KYCPlus ports taken: 3000, 3002, 4000, 4001, 8000, 8086, 8087. Pick something else.</div>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Ensure Docker and Nginx are installed</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker --version
+docker compose version
+nginx -v</pre>
+        <p>If missing: <code>apt install docker.io nginx -y</code></p>
+      </div></div>
+
+      <div class="step"><div class="step-num">4</div><div class="step-body">
+        <strong>Code is in Git — pull it to server</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Backend</span>
+cd /home/ubuntu/<span class="dyn-env">staging</span>
+git clone &lt;backend-repo-url&gt; <span class="dyn-name">newapp</span>_backend
+
+<span class="c"># Frontend</span>
+cd /var/www/<span class="dyn-env">staging</span>
+git clone &lt;frontend-repo-url&gt; <span class="dyn-name">newapp</span>_frontend</pre>
+      </div></div>
+    </div>
+
+    <div class="step-group">
+      <div class="step-group-title">Pre-deployment checklist</div>
+      <ul class="checklist">
+        <li>DNS A record created and verified</li>
+        <li>Backend port <span class="dyn-bport">4002</span> is free on this server</li>
+        <li>Frontend port <span class="dyn-fport">3003</span> is free on this server</li>
+        <li>Code pulled from Git to server</li>
+        <li>Dockerfile exists in backend and frontend repos</li>
+        <li>docker-compose.yml exists in backend and frontend repos</li>
+        <li>.env.example or list of required variables is available</li>
+        <li>AWS Security Group allows ports 80 and 443 inbound</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 2: Folder Setup -->
+  <div class="phase-content" id="phase-1">
+    <div class="step-group">
+      <div class="step-group-title">Create folder structure</div>
+      <div class="info">Convention: backends in <code>/home/ubuntu/&lt;env&gt;/</code>, frontends in <code>/var/www/&lt;env&gt;/</code></div>
+
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>Create directories</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Backend folder</span>
+mkdir -p /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend
+cd /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend
+
+<span class="c"># Frontend folder</span>
+mkdir -p /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend
+cd /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Clone or copy code into folders</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend
+git clone &lt;repo-url&gt; .    <span class="c"># note the dot — clones into current folder</span>
+git checkout &lt;branch&gt;
+
+cd /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend
+git clone &lt;repo-url&gt; .
+git checkout &lt;branch&gt;</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Verify Dockerfiles exist</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">ls /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend/Dockerfile
+ls /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend/docker-compose.yml
+ls /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend/Dockerfile
+ls /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend/docker-compose.yml</pre>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 3: .env Files -->
+  <div class="phase-content" id="phase-2">
+    <div class="step-group">
+      <div class="step-group-title">Create .env files</div>
+
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>Backend .env</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend/.env</pre>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">PORT=<span class="dyn-bport">4002</span>
+NODE_ENV=production
+DB_HOST=host.docker.internal
+DB_PORT=3306
+DB_NAME=<span class="dyn-name">newapp</span>_db
+DB_USER=dbuser
+DB_PASS="yourpassword"
+JWT_SECRET="your_jwt_secret_here"
+AWS_REGION=ap-south-1
+<span class="c"># Add all other variables your app needs</span></pre>
+        <div class="note">Quote values that contain special chars: <code>!@#$%^&*()</code></div>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Frontend .env</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend/.env</pre>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">VITE_API_URL=https://<span class="dyn-domain">newapp.kycplus.in</span>/api
+VITE_API=https://<span class="dyn-domain">newapp.kycplus.in</span>/api
+VITE_ASSET_URL=https://<span class="dyn-domain">newapp.kycplus.in</span>
+VITE_ENV=PROD
+PORT=<span class="dyn-fport">3003</span>
+<span class="c"># Add all other VITE_ variables your app needs</span></pre>
+        <div class="warn">⚠ VITE_ variables bake into JS bundle at build time. Wrong value here = must rebuild entire image.</div>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Verify no typos in .env</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cat /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend/.env
+cat /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend/.env</pre>
+      </div></div>
+    </div>
+
+    <div class="step-group">
+      <div class="step-group-title">Common .env mistakes to avoid</div>
+      <table class="var-table">
+        <tr><th>Wrong</th><th>Correct</th><th>Why</th></tr>
+        <tr><td>VITE_API=https://domain.com</td><td>VITE_API=https://domain.com/api</td><td>Missing /api suffix</td></tr>
+        <tr><td>PASSWORD=P@ss!word</td><td>PASSWORD="P@ss!word"</td><td>Special chars break parsing</td></tr>
+        <tr><td>PORT=4002 (frontend)</td><td>VITE_PORT is not a thing — use PORT=4002</td><td>Frontend port is for compose, not VITE_</td></tr>
+        <tr><td>DB_HOST=localhost</td><td>DB_HOST=host.docker.internal</td><td>Container can't reach server localhost</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 4: Docker Build -->
+  <div class="phase-content" id="phase-3">
+    <div class="step-group">
+      <div class="step-group-title">Build and start Docker containers</div>
+
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>Build and start Backend</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend
+docker compose build --no-cache
+docker compose up -d</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Verify backend started</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps | grep <span class="dyn-name">newapp</span>
+docker logs -f <span class="dyn-name">newapp</span>_backend_<span class="dyn-env">staging</span>
+<span class="c"># Wait for "Server running on port XXXX" message</span>
+<span class="c"># Press Ctrl+C to stop watching logs</span></pre>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Quick health test</span>
+curl -s http://localhost:<span class="dyn-bport">4002</span>/health</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Build and start Frontend</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">cd /var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend
+docker compose --env-file .env build --no-cache
+docker compose up -d</pre>
+        <div class="info">Frontend build takes longer (2–5 min) — it runs npm install and npm run build inside.</div>
+      </div></div>
+
+      <div class="step"><div class="step-num">4</div><div class="step-body">
+        <strong>Verify frontend started</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps | grep <span class="dyn-fport">3003</span>
+curl -s -o /dev/null -w "%{http_code}" http://localhost:<span class="dyn-fport">3003</span>
+<span class="c"># Should return 200</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num warn">!</div><div class="step-body">
+        <strong>If container fails to start</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps -a          <span class="c"># see if container exited</span>
+docker logs &lt;container-name&gt;   <span class="c"># read the error</span></pre>
+        <div class="warn">Common causes: wrong PORT in .env, missing env variable, Dockerfile error, port already in use.</div>
+      </div></div>
+    </div>
+
+    <div class="step-group">
+      <div class="step-group-title">docker-compose.yml reference templates</div>
+      <p style="color:#8b949e;font-size:12px;margin-bottom:8px">If your repo doesn't have a docker-compose.yml, use these:</p>
+      <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Backend docker-compose.yml</span>
+services:
+  api:
+    build:
+      context: .
+    container_name: <span class="dyn-name">newapp</span>_backend_<span class="dyn-env">staging</span>
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped</pre>
+      <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Frontend docker-compose.yml</span>
+services:
+  web:
+    build:
+      context: .
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_API=${VITE_API}
+        - VITE_ASSET_URL=${VITE_ASSET_URL}
+        - VITE_ENV=${VITE_ENV}
+    container_name: <span class="dyn-name">newapp</span>_frontend_<span class="dyn-env">staging</span>
+    ports:
+      - "${PORT:-<span class="dyn-fport">3003</span>}:80"
+    restart: unless-stopped</pre>
+    </div>
+  </div>
+
+  <!-- PHASE 5: Nginx -->
+  <div class="phase-content" id="phase-4">
+    <div class="step-group">
+      <div class="step-group-title">Configure Nginx</div>
+
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>Create nginx config file</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nano /etc/nginx/sites-available/<span class="dyn-domain">newapp.kycplus.in</span>.conf</pre>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Paste this template — then edit ports to match your .env</span>
+server {
+    server_name <span class="dyn-domain">newapp.kycplus.in</span>;
+
+    <span class="c"># IMPORTANT: SSL cert challenge — never proxy this</span>
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    <span class="c"># API → backend container</span>
+    location /api/ {
+        proxy_pass http://localhost:<span class="dyn-bport">4002</span>/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    <span class="c"># Frontend — everything else</span>
+    location / {
+        proxy_pass http://localhost:<span class="dyn-fport">3003</span>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    listen 80;
+    <span class="c"># SSL lines will be added by certbot in next phase</span>
+}</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Enable the config (create symlink)</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">ln -s /etc/nginx/sites-available/<span class="dyn-domain">newapp.kycplus.in</span>.conf \
+      /etc/nginx/sites-enabled/<span class="dyn-domain">newapp.kycplus.in</span>.conf</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Test config and reload nginx</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nginx -t
+<span class="c"># Must show: "syntax is ok" and "test is successful"</span>
+<span class="c"># If errors: fix them before proceeding</span>
+
+systemctl reload nginx</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">4</div><div class="step-body">
+        <strong>Test HTTP (port 80) works before adding SSL</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">curl -I http://<span class="dyn-domain">newapp.kycplus.in</span>
+<span class="c"># Should return 200 OK (or 301 after SSL added)</span></pre>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 6: SSL -->
+  <div class="phase-content" id="phase-5">
+    <div class="step-group">
+      <div class="step-group-title">Add SSL Certificate (HTTPS)</div>
+      <div class="warn">Prerequisite: DNS must point to this server AND nginx must serve the domain on port 80. Both must be true or certbot will fail.</div>
+
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        <strong>Verify domain resolves to this server</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">curl -I http://<span class="dyn-domain">newapp.kycplus.in</span>
+<span class="c"># Must return a response (200, 301, 302) — not connection refused</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        <strong>Dry run first (no changes — just checks)</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">certbot --nginx -d <span class="dyn-domain">newapp.kycplus.in</span> --dry-run
+<span class="c"># Must show "The dry run was successful"</span>
+<span class="c"># If it fails: fix the error before doing the real run</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        <strong>Issue the real SSL certificate</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">certbot --nginx -d <span class="dyn-domain">newapp.kycplus.in</span></pre>
+        <p>Certbot will ask for email (first time only) and automatically update your nginx config to add SSL lines and redirect HTTP→HTTPS.</p>
+      </div></div>
+
+      <div class="step"><div class="step-num">4</div><div class="step-body">
+        <strong>Verify HTTPS works</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">curl -I https://<span class="dyn-domain">newapp.kycplus.in</span>
+<span class="c"># Should return 200 OK</span>
+
+certbot certificates
+<span class="c"># Should show your domain with expiry date</span></pre>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 7: Verify -->
+  <div class="phase-content" id="phase-6">
+    <div class="step-group">
+      <div class="step-group-title">Final verification — run all checks</div>
+
+      <div class="step"><div class="step-num done">✓</div><div class="step-body">
+        <strong>All containers running</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}"
+<span class="c"># Must show your new containers as "Up"</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num done">✓</div><div class="step-body">
+        <strong>Nginx healthy</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">nginx -t && systemctl is-active nginx</pre>
+      </div></div>
+
+      <div class="step"><div class="step-num done">✓</div><div class="step-body">
+        <strong>Endpoints respond correctly</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button"><span class="c"># Backend health check</span>
+curl -s https://<span class="dyn-domain">newapp.kycplus.in</span>/api/health
+
+<span class="c"># Frontend loads</span>
+curl -s -o /dev/null -w "%{http_code}" https://<span class="dyn-domain">newapp.kycplus.in</span>
+<span class="c"># Expect: 200</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num done">✓</div><div class="step-body">
+        <strong>Open in browser and test login / key flows</strong>
+        <p>Always manually test in browser — curl only checks HTTP status, not app functionality.</p>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">https://<span class="dyn-domain">newapp.kycplus.in</span></pre>
+      </div></div>
+
+      <div class="step"><div class="step-num done">✓</div><div class="step-body">
+        <strong>Check logs for any errors</strong>
+        <pre><button class="copy-btn" onclick="cp(this)">Copy</button">docker logs --tail 50 <span class="dyn-name">newapp</span>_backend_<span class="dyn-env">staging</span>
+docker logs --tail 50 <span class="dyn-name">newapp</span>_frontend_<span class="dyn-env">staging</span>
+grep "error" /var/log/nginx/error.log | tail -20</pre>
+      </div></div>
+    </div>
+
+    <div class="step-group">
+      <div class="step-group-title">🎉 Deployment complete — update port registry</div>
+      <div class="note">Add your new environment to the port registry doc so the team knows what's running where.</div>
+      <table class="var-table">
+        <tr><th>Container</th><th>Port</th><th>Domain</th><th>Folder</th></tr>
+        <tr>
+          <td><span class="dyn-name">newapp</span>_backend_<span class="dyn-env">staging</span></td>
+          <td><span class="dyn-bport">4002</span></td>
+          <td><span class="dyn-domain">newapp.kycplus.in</span>/api/</td>
+          <td>/home/ubuntu/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_backend</td>
+        </tr>
+        <tr>
+          <td><span class="dyn-name">newapp</span>_frontend_<span class="dyn-env">staging</span></td>
+          <td><span class="dyn-fport">3003</span></td>
+          <td><span class="dyn-domain">newapp.kycplus.in</span></td>
+          <td>/var/www/<span class="dyn-env">staging</span>/<span class="dyn-name">newapp</span>_frontend</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  KYCPlus DevOps Docs · <a href="index.html">← Back to Index</a> · <a href="https://github.com/ketkilonare">github.com/ketkilonare</a>
+</div>
+
+<script>
+function showPhase(idx, el) {
+  document.querySelectorAll('.phase-content').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.phase-item').forEach(p => p.classList.remove('active'));
+  document.getElementById('phase-' + idx).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function cp(btn) {
+  const pre = btn.parentElement;
+  const text = pre.innerText.replace(/^Copy\n?/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.style.color = '#3fb950';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 1500);
+  });
+}
+
+function updateAll() {
+  const domain = document.getElementById('f-domain').value || 'newapp.kycplus.in';
+  const bport = document.getElementById('f-bport').value || '4002';
+  const fport = document.getElementById('f-fport').value || '3003';
+  const name = document.getElementById('f-name').value || 'newapp';
+  const env = document.getElementById('f-env').value || 'staging';
+
+  document.querySelectorAll('.dyn-domain').forEach(el => el.textContent = domain);
+  document.querySelectorAll('.dyn-bport').forEach(el => el.textContent = bport);
+  document.querySelectorAll('.dyn-fport').forEach(el => el.textContent = fport);
+  document.querySelectorAll('.dyn-name').forEach(el => el.textContent = name);
+  document.querySelectorAll('.dyn-env').forEach(el => el.textContent = env);
+}
+</script>
+</body>
+</html>
