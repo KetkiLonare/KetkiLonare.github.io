@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYCPlus Port Registry & Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; font-size: 13px; line-height: 1.6; }
+.topbar { background: #161b22; border-bottom: 1px solid #21262d; padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+.topbar a { color: #58a6ff; text-decoration: none; font-size: 12px; }
+.topbar a:hover { text-decoration: underline; }
+.topbar-title { color: #f0f6fc; font-weight: 700; font-size: 15px; }
+.container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+h2 { font-size: 18px; font-weight: 700; color: #f0f6fc; margin-bottom: 6px; }
+.subtitle { color: #8b949e; font-size: 13px; margin-bottom: 28px; }
+.sec { margin-bottom: 36px; }
+.sec-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8b949e; margin-bottom: 12px; border-bottom: 1px solid #21262d; padding-bottom: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #161b22; color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 12px; border: 1px solid #30363d; text-align: left; white-space: nowrap; }
+td { padding: 8px 12px; border: 1px solid #30363d; vertical-align: middle; }
+tr:nth-child(even) td { background: #0d1117; }
+tr:nth-child(odd) td { background: #161b22; }
+.port { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; font-family: monospace; background: #1a2a3a; color: #58a6ff; border: 1px solid #30363d; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.bg { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
+.bo { background: #3a2a1a; color: #ffa657; border: 1px solid #ffa657; }
+.bb { background: #1a2a3a; color: #58a6ff; border: 1px solid #58a6ff; }
+code { background: #21262d; padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #a5d6ff; font-family: monospace; }
+pre { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 14px 16px; font-family: monospace; font-size: 12px; overflow-x: auto; position: relative; }
+.copy-btn { position: absolute; top: 8px; right: 10px; background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 3px 9px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+.copy-btn:hover { background: #30363d; color: #fff; }
+.c { color: #8b949e; }
+.h { color: #ffa657; }
+.g { color: #3fb950; }
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-row { display: flex; align-items: stretch; gap: 0; }
+.flow-box { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: 12px; min-width: 140px; text-align: center; }
+.flow-box .title { font-weight: 700; color: #f0f6fc; margin-bottom: 2px; }
+.flow-box .sub { color: #8b949e; font-size: 11px; }
+.arrow { display: flex; align-items: center; justify-content: center; padding: 0 8px; color: #58a6ff; font-size: 18px; }
+.arrow-down { display: flex; justify-content: center; color: #58a6ff; font-size: 18px; padding: 4px 0; }
+.flow-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.note { background: #0d2a0d; border-left: 3px solid #3fb950; padding: 8px 12px; font-size: 12px; color: #3fb950; border-radius: 0 4px 4px 0; margin: 10px 0; }
+.warn { background: #2a1f0d; border-left: 3px solid #d29922; padding: 8px 12px; font-size: 12px; color: #d29922; border-radius: 0 4px 4px 0; margin: 10px 0; }
+.info { background: #0d1a2a; border-left: 3px solid #58a6ff; padding: 8px 12px; font-size: 12px; color: #79c0ff; border-radius: 0 4px 4px 0; margin: 10px 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; }
+.card h4 { color: #79c0ff; font-size: 13px; margin-bottom: 8px; }
+.footer { text-align: center; padding: 28px; border-top: 1px solid #21262d; color: #484f58; font-size: 12px; margin-top: 20px; }
+.footer a { color: #58a6ff; text-decoration: none; }
+@media(max-width:640px){ .flow-split { grid-template-columns: 1fr 1fr; } .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← Back to Docs</a>
+  <span style="color:#30363d">|</span>
+  <span class="topbar-title">🗺️ Port Registry & Architecture</span>
+</div>
+
+<div class="container">
+  <h2>Port Registry & System Architecture</h2>
+  <p class="subtitle">All containers, ports, domains, and file paths for the KYCPlus deployment on a single AWS EC2 instance.</p>
+
+  <!-- PORT TABLE -->
+  <div class="sec">
+    <div class="sec-title">Complete Port Registry</div>
+    <table>
+      <tr>
+        <th>Container Name</th>
+        <th>Host Port</th>
+        <th>Domain</th>
+        <th>Type</th>
+        <th>Env</th>
+        <th>Source Folder</th>
+      </tr>
+      <tr>
+        <td><code>kycplus_backend_qa</code></td>
+        <td><span class="port">4000</span></td>
+        <td>qa.kycplus.in<code style="color:#8b949e">/api/</code></td>
+        <td>Node.js Backend</td>
+        <td><span class="badge bg">QA</span></td>
+        <td><code>/home/ubuntu/QA/kycplus_backend2</code></td>
+      </tr>
+      <tr>
+        <td><code>kycplus_backend</code></td>
+        <td><span class="port">4001</span></td>
+        <td>demo.kycplus.in<code style="color:#8b949e">/api/</code></td>
+        <td>Node.js Backend</td>
+        <td><span class="badge bo">Demo</span></td>
+        <td><code>/home/ubuntu/Demo/kycplus_backend2</code></td>
+      </tr>
+      <tr>
+        <td><code>kycplus_frontend_qa</code></td>
+        <td><span class="port">3000</span></td>
+        <td>qa.kycplus.in</td>
+        <td>React/Vite Frontend</td>
+        <td><span class="badge bg">QA</span></td>
+        <td><code>/var/www/QA/kycplus_frontend</code></td>
+      </tr>
+      <tr>
+        <td><code>kycplus_frontend_demo</code></td>
+        <td><span class="port">3002</span></td>
+        <td>demo.kycplus.in</td>
+        <td>React/Vite Frontend</td>
+        <td><span class="badge bo">Demo</span></td>
+        <td><code>/var/www/Demo/kycplus_frontend</code></td>
+      </tr>
+      <tr>
+        <td><code>kyc-rekyc-frontend</code></td>
+        <td><span class="port">8086</span></td>
+        <td>qarekyc.kycplus.in</td>
+        <td>ReKYC Frontend</td>
+        <td><span class="badge bg">QA</span></td>
+        <td><code>/var/www/QA/kycplus_rekyc</code></td>
+      </tr>
+      <tr>
+        <td><code>kyc-rekyc-frontend-demo</code></td>
+        <td><span class="port">8087</span></td>
+        <td>demorekyc.kycplus.in</td>
+        <td>ReKYC Frontend</td>
+        <td><span class="badge bo">Demo</span></td>
+        <td><code>/var/www/Demo/kycplus_rekyc</code></td>
+      </tr>
+      <tr>
+        <td><code>face-ai-face-api-1</code></td>
+        <td><span class="port">8000</span></td>
+        <td>*.kycplus.in<code style="color:#8b949e">/face/</code></td>
+        <td>Face AI (FastAPI/Python)</td>
+        <td><span class="badge bb">Shared</span></td>
+        <td><code>/home/ubuntu/face-ai</code></td>
+      </tr>
+    </table>
+    <div class="note">Nginx listens on ports 80 and 443. All above ports are internal — not exposed to internet directly.</div>
+  </div>
+
+  <!-- REQUEST FLOW -->
+  <div class="sec">
+    <div class="sec-title">Request Flow (How Traffic Reaches Containers)</div>
+    <div class="grid2">
+      <div class="card">
+        <h4>demo.kycplus.in</h4>
+        <pre style="font-size:11px;padding:10px"><span class="h">Browser</span> → HTTPS :443
+  → Nginx (server_name: demo.kycplus.in)
+    <span class="g">/api/*</span>  → localhost:<span class="port" style="font-size:10px;padding:1px 5px">4001</span>  (Demo Backend)
+    <span class="g">/face/*</span> → localhost:<span class="port" style="font-size:10px;padding:1px 5px">8000</span>  (Face AI)
+    <span class="g">/*</span>      → localhost:<span class="port" style="font-size:10px;padding:1px 5px">3002</span>  (Demo Frontend)</pre>
+      </div>
+      <div class="card">
+        <h4>qa.kycplus.in</h4>
+        <pre style="font-size:11px;padding:10px"><span class="h">Browser</span> → HTTPS :443
+  → Nginx (server_name: qa.kycplus.in)
+    <span class="g">/api/*</span>  → localhost:<span class="port" style="font-size:10px;padding:1px 5px">4000</span>  (QA Backend)
+    <span class="g">/face/*</span> → localhost:<span class="port" style="font-size:10px;padding:1px 5px">8000</span>  (Face AI)
+    <span class="g">/*</span>      → localhost:<span class="port" style="font-size:10px;padding:1px 5px">3000</span>  (QA Frontend)</pre>
+      </div>
+      <div class="card">
+        <h4>demorekyc.kycplus.in</h4>
+        <pre style="font-size:11px;padding:10px"><span class="h">Browser</span> → HTTPS :443
+  → Nginx (server_name: demorekyc.kycplus.in)
+    <span class="g">/api/*</span>  → localhost:<span class="port" style="font-size:10px;padding:1px 5px">4001</span>  (Demo Backend)
+    <span class="g">/*</span>      → localhost:<span class="port" style="font-size:10px;padding:1px 5px">8087</span>  (Demo ReKYC)</pre>
+      </div>
+      <div class="card">
+        <h4>qarekyc.kycplus.in</h4>
+        <pre style="font-size:11px;padding:10px"><span class="h">Browser</span> → HTTPS :443
+  → Nginx (server_name: qarekyc.kycplus.in)
+    <span class="g">/api/*</span>  → localhost:<span class="port" style="font-size:10px;padding:1px 5px">4000</span>  (QA Backend)
+    <span class="g">/*</span>      → localhost:<span class="port" style="font-size:10px;padding:1px 5px">8086</span>  (QA ReKYC)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- NGINX CONFIG LOCATIONS -->
+  <div class="sec">
+    <div class="sec-title">Nginx Config Files</div>
+    <table>
+      <tr><th>Domain</th><th>Config File Path</th></tr>
+      <tr><td>demo.kycplus.in</td><td><code>/etc/nginx/sites-available/demo.kycplus.in.conf</code></td></tr>
+      <tr><td>qa.kycplus.in</td><td><code>/etc/nginx/sites-available/qa.kycplus.in.conf</code></td></tr>
+      <tr><td>demorekyc.kycplus.in</td><td><code>/etc/nginx/sites-available/demorekyc.kycplus.in.conf</code></td></tr>
+      <tr><td>qarekyc.kycplus.in</td><td><code>/etc/nginx/sites-available/qarekyc.kycplus.in.conf</code></td></tr>
+    </table>
+    <div class="warn">After editing any nginx config: always run <code>nginx -t && systemctl reload nginx</code></div>
+  </div>
+
+  <!-- FOLDER STRUCTURE -->
+  <div class="sec">
+    <div class="sec-title">Full Folder Structure on EC2</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button><span class="h">/home/ubuntu/</span>
+├── <span class="g">Demo/</span>
+│   └── kycplus_backend2/        <span class="c"># Demo backend — .env, docker-compose.yml, src</span>
+│       ├── .env                  <span class="c"># PORT=4001, DB_*, JWT_*, AWS_*</span>
+│       └── docker-compose.yml
+├── <span class="g">QA/</span>
+│   └── kycplus_backend2/        <span class="c"># QA backend — .env, docker-compose.yml, src</span>
+│       ├── .env                  <span class="c"># PORT=4000</span>
+│       └── docker-compose.yml
+└── face-ai/                     <span class="c"># Face recognition API (shared)</span>
+    └── docker-compose.yml
+
+<span class="h">/var/www/</span>
+├── <span class="g">Demo/</span>
+│   ├── kycplus_frontend/        <span class="c"># Demo KYC frontend</span>
+│   │   ├── .env                  <span class="c"># VITE_API_URL, VITE_API, PORT=3002</span>
+│   │   └── docker-compose.yml
+│   └── kycplus_rekyc/           <span class="c"># Demo ReKYC frontend</span>
+│       ├── .env                  <span class="c"># VITE_API, FRONTEND_PORT=8087</span>
+│       └── docker-compose.yml
+└── <span class="g">QA/</span>
+    ├── kycplus_frontend/        <span class="c"># QA KYC frontend</span>
+    │   ├── .env                  <span class="c"># VITE_API_URL, VITE_API, PORT=3000</span>
+    │   └── docker-compose.yml
+    └── kycplus_rekyc/           <span class="c"># QA ReKYC frontend</span>
+        ├── .env
+        └── docker-compose.yml
+
+<span class="h">/etc/nginx/</span>
+├── sites-available/             <span class="c"># config files (one per domain)</span>
+└── sites-enabled/               <span class="c"># symlinks to active configs</span></pre>
+  </div>
+
+  <!-- ENV REFERENCE -->
+  <div class="sec">
+    <div class="sec-title">.env Variable Reference</div>
+    <div class="grid2">
+      <div class="card">
+        <h4>Backend .env (applies at runtime)</h4>
+        <pre style="font-size:11px;padding:10px">PORT=4001
+NODE_ENV=production
+DB_HOST=host.docker.internal
+DB_PORT=3306
+DB_NAME=kycdb
+DB_USER=kycuser
+DB_PASS=password
+JWT_SECRET=secret
+AWS_REGION=ap-south-1</pre>
+        <div class="note" style="margin-top:8px;font-size:11px">Change → restart container only. No rebuild.</div>
+      </div>
+      <div class="card">
+        <h4>Frontend .env (bakes into bundle at build)</h4>
+        <pre style="font-size:11px;padding:10px">VITE_API_URL=https://demo.kycplus.in/api
+VITE_API=https://demo.kycplus.in/api
+VITE_ASSET_URL=https://demo.kycplus.in
+VITE_ENV=PROD
+VITE_FACE_API_URL=https://dev.kycplus.in/face
+VITE_CLIENT_SESSION_STORAGE_KEY=session_data
+VITE_CLIENT_AUTH_STORAGE_KEY=accessToken
+PORT=3002</pre>
+        <div class="warn" style="margin-top:8px;font-size:11px">Change → must rebuild Docker image.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCKER STATUS COMMAND -->
+  <div class="sec">
+    <div class="sec-title">Check All Running Containers</div>
+    <pre><button class="copy-btn" onclick="cp(this)">Copy</button>docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}"</pre>
+    <p style="color:#8b949e;font-size:12px;margin-top:8px;">Expected output — all 7 containers up:</p>
+    <pre style="font-size:11px;margin-top:6px"><span class="g">kyc-rekyc-frontend-demo</span>   0.0.0.0:8087->80/tcp    Up (healthy)
+<span class="g">kycplus_backend</span>           0.0.0.0:4001->4001/tcp  Up (healthy)
+<span class="g">kycplus_frontend_qa</span>       0.0.0.0:3000->80/tcp    Up
+<span class="g">kycplus_frontend_demo</span>     0.0.0.0:3002->80/tcp    Up
+<span class="g">face-ai-face-api-1</span>        0.0.0.0:8000->8000/tcp  Up (healthy)
+<span class="g">kyc-rekyc-frontend</span>        0.0.0.0:8086->80/tcp    Up
+<span class="g">kycplus_backend_qa</span>        0.0.0.0:4000->4000/tcp  Up (healthy)</pre>
+  </div>
+
+</div>
+
+<div class="footer">
+  KYCPlus DevOps Docs · <a href="index.html">← Back to Index</a> · <a href="https://github.com/ketkilonare">github.com/ketkilonare</a>
+</div>
+
+<script>
+function cp(btn) {
+  const pre = btn.parentElement;
+  const text = pre.innerText.replace(/^Copy\n?/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.style.color = '#3fb950';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 1500);
+  });
+}
+</script>
+</body>
+</html>
